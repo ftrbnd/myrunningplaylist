@@ -11,7 +11,7 @@ export default async function PlaylistCollection() {
 	const { playlists, error } = await getPlaylists({ token });
 
 	return (
-		<ul className='flex flex-col md:grid md:grid-cols-2 gap-2'>
+		<ul className='flex flex-col md:grid md:grid-cols-2 gap-4'>
 			{error ? (
 				<p>{error.message}</p>
 			) : playlists?.length === 0 ? (

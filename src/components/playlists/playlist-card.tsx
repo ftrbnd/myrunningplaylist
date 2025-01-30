@@ -4,7 +4,6 @@ import {
 	CardTitle,
 	CardDescription,
 	CardContent,
-	CardFooter,
 } from '@/components/ui/card';
 import { Playlist, TrackItem } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
@@ -19,13 +18,14 @@ export default function PlaylistCard({ playlist }: Props) {
 		: null;
 
 	return (
-		<Card>
+		<Card className='h-full'>
 			<CardHeader>
 				<CardTitle>{playlist.name}</CardTitle>
-				<CardDescription>{playlist.description}</CardDescription>
+				<CardDescription>{playlist.tracks.total} tracks</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<Image
+					className='h-full w-full aspect-square object-cover rounded-md'
 					src={image?.url ?? './placeholder.svg'}
 					alt={playlist.name}
 					width={image?.width ?? 100}
@@ -33,9 +33,6 @@ export default function PlaylistCard({ playlist }: Props) {
 					priority
 				/>
 			</CardContent>
-			<CardFooter>
-				<p>{playlist.tracks.total} tracks</p>
-			</CardFooter>
 		</Card>
 	);
 }
