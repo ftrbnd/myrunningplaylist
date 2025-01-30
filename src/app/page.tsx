@@ -1,12 +1,10 @@
-'use client';
-
-import { Button } from '@/components/ui/button';
-import { signIn } from '@/lib/auth-client';
+import Logout from '@/components/logout';
 
 export default function Home() {
 	return (
 		<div>
-			<Button onClick={signIn}>Sign in with Spotify</Button>
+			My Running Playlist
+			<Logout />
 		</div>
 	);
 }
