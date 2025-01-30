@@ -1,7 +1,7 @@
 import { db } from '@/db';
 import { account } from '@/db/schema';
 import { createFetch } from '@better-fetch/fetch';
-import { Page, Playlist } from '@spotify/web-api-ts-sdk';
+import { Page, Playlist, TrackItem } from '@spotify/web-api-ts-sdk';
 import { eq } from 'drizzle-orm';
 
 export const $fetch = createFetch({
@@ -45,4 +45,30 @@ export async function getPlaylists({ token }: { token?: string | null }) {
 	}
 
 	return { playlists: playlists?.items };
+}
+
+export async function getPlaylist({
+	token,
+	id,
+}: {
+	token?: string | null;
+	id: string;
+}) {
+	if (!token) throw new Error('Access token is required');
+
+	const { data: playlist, error } = await $fetch<Playlist<TrackItem>>(
+		`/playlists/${id}`,
+		{
+			auth: {
+				type: 'Bearer',
+				token,
+			},
+		}
+	);
+
+	if (error) {
+		return { error };
+	}
+
+	return { playlist };
 }

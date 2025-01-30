@@ -1,3 +1,5 @@
+'use client';
+
 import {
 	Card,
 	CardHeader,
@@ -7,20 +9,25 @@ import {
 } from '@/components/ui/card';
 import { Playlist, TrackItem } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface Props {
 	playlist: Playlist<TrackItem>;
 }
 
 export default function PlaylistCard({ playlist }: Props) {
+	const router = useRouter();
+
 	const image = playlist.images
 		? playlist.images.find((image) => image !== undefined && image !== null)
 		: null;
 
 	return (
-		<Card className='h-full'>
+		<Card
+			onClick={() => router.push(`/${playlist.id}`)}
+			className='h-full hover:bg-transparent hover:cursor-pointer'>
 			<CardHeader>
-				<CardTitle>{playlist.name}</CardTitle>
+				<CardTitle className='hover:underline'>{playlist.name}</CardTitle>
 				<CardDescription>{playlist.tracks.total} tracks</CardDescription>
 			</CardHeader>
 			<CardContent>
