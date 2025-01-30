@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
-import SiteFooter from './site-footer';
+import SiteFooter from '../site-footer';
 import Image from 'next/image';
 import Login from './login';
 

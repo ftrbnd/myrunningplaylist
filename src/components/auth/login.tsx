@@ -2,7 +2,7 @@
 
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { signIn } from '@/lib/auth-client';
 
 export default function Login() {
