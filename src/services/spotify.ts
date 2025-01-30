@@ -11,7 +11,6 @@ export const $fetch = createFetch({
 		attempts: 3,
 		delay: 1000,
 	},
-	throw: true,
 });
 
 export async function getAccessToken({ userId }: { userId?: string }) {
@@ -31,12 +30,19 @@ export async function getAccessToken({ userId }: { userId?: string }) {
 export async function getPlaylists({ token }: { token?: string | null }) {
 	if (!token) throw new Error('Access token is required');
 
-	const playlists = await $fetch<Page<Playlist>>('/me/playlists', {
-		auth: {
-			type: 'Bearer',
-			token,
-		},
-	});
+	const { data: playlists, error } = await $fetch<Page<Playlist>>(
+		'/me/playlists',
+		{
+			auth: {
+				type: 'Bearer',
+				token,
+			},
+		}
+	);
 
-	return { playlists: playlists.items };
+	if (error) {
+		return { error };
+	}
+
+	return { playlists: playlists?.items };
 }

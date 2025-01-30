@@ -8,11 +8,13 @@ export default async function PlaylistCollection() {
 		headers: await headers(), // you need to pass the headers object.
 	});
 	const token = await getAccessToken({ userId: session?.user.id });
-	const { playlists } = await getPlaylists({ token });
+	const { playlists, error } = await getPlaylists({ token });
 
 	return (
 		<ul className='flex flex-col md:grid md:grid-cols-2 gap-2'>
-			{playlists?.length === 0 ? (
+			{error ? (
+				<p>{error.message}</p>
+			) : playlists?.length === 0 ? (
 				<p>No playlists found.</p>
 			) : (
 				playlists?.map((playlist) => (
