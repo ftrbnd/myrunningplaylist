@@ -64,7 +64,7 @@ export default function RootLayout({
 								data-wrapper=''
 								className='border-grid flex flex-1 flex-col'>
 								<SiteHeader />
-								<main className='flex flex-1 flex-col'>{children}</main>
+								<main className='flex flex-1 flex-col p-4'>{children}</main>
 								<SiteFooter />
 							</div>
 						</div>

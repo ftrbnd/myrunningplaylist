@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import { getAccessToken, getPlaylist } from '@/services/spotify';
 import { headers } from 'next/headers';
+import TrackDetails from '@/components/playlists/track-details';
 
 interface Props {
 	params: Promise<{ playlistId: string }>;
@@ -15,7 +16,20 @@ export default async function Page({ params }: Props) {
 	const token = await getAccessToken({ userId: session?.user.id });
 	const { playlist, error } = await getPlaylist({ token, id: playlistId });
 
-	if (error) return <p>{error.message}</p>;
+	if (error) throw new Error(error.message);
 
-	return <div>My playlist: {playlist?.name}</div>;
+	return (
+		<div>
+			<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4'>
+				{playlist?.name}
+			</h1>
+			<ul className='flex flex-col gap-2'>
+				{playlist.tracks.items.map(({ track }) => (
+					<li key={track.id}>
+						<TrackDetails track={track} />
+					</li>
+				))}
+			</ul>
+		</div>
+	);
 }
