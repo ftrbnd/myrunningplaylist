@@ -1,16 +1,15 @@
 'use client';
 
-import { faSpotify } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '../ui/button';
 import { signIn } from '@/lib/auth-client';
+import { Icons } from '@/components/layout/icons';
 
 export default function Login() {
 	return (
 		<Button
 			onClick={signIn}
 			className='w-full'>
-			<FontAwesomeIcon icon={faSpotify} />
+			<Icons.spotify />
 			Continue with Spotify
 		</Button>
 	);

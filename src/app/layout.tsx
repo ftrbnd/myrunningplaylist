@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/components/layout/theme-provider';
+import { META_THEME_COLORS, siteConfig } from '@/config/site';
+import { SiteHeader } from '@/components/layout/site-header';
+import SiteFooter from '@/components/layout/site-footer';
+import { cn } from '@/lib/utils';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -14,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: 'My Running Playlist',
-	description: 'Enhance your running with music',
+	title: siteConfig.name,
+	description: siteConfig.description,
 };
 
 export default function RootLayout({
@@ -29,15 +33,41 @@ export default function RootLayout({
 			suppressHydrationWarning
 			// TODO: https://github.com/shadcn-ui/ui/issues/5552
 		>
+			<head>
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `
+              try {
+                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
+                }
+              } catch (_) {}
+            `,
+					}}
+				/>
+			</head>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+				className={cn(
+					'min-h-svh bg-background font-sans antialiased',
+					geistSans.variable,
+					geistMono.variable
+				)}>
 				<ThemeProvider
 					attribute='class'
 					defaultTheme='system'
 					enableSystem
-					disableTransitionOnChange>
-					<div className='flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10'>
-						{children}
+					disableTransitionOnChange
+					enableColorScheme>
+					<div vaul-drawer-wrapper=''>
+						<div className='relative flex min-h-svh flex-col bg-background'>
+							<div
+								data-wrapper=''
+								className='border-grid flex flex-1 flex-col'>
+								<SiteHeader />
+								<main className='flex flex-1 flex-col'>{children}</main>
+								<SiteFooter />
+							</div>
+						</div>
 					</div>
 				</ThemeProvider>
 			</body>

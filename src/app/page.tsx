@@ -1,5 +1,4 @@
 import Login from '@/components/auth/login';
-import Logout from '@/components/auth/logout';
 import PlaylistCollection from '@/components/playlists/playlist-collection';
 import PlaylistSkeletonCards from '@/components/playlists/skeletons';
 import { auth } from '@/lib/auth';
@@ -11,24 +10,16 @@ export default async function Home() {
 		headers: await headers(), // you need to pass the headers object.
 	});
 
+	if (!session?.session) return <Login />;
+
 	return (
-		<div className='w-full max-w-sm md:max-w-3xl'>
-			<div className='flex flex-col justify-between items-center mb-4'>
-				<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl'>
-					My Running Playlist
-				</h1>
-				{session?.session ? (
-					<>
-						<p>Hello, {session.user.name}</p>
-						<Logout />
-						<Suspense fallback={<PlaylistSkeletonCards />}>
-							<PlaylistCollection />
-						</Suspense>
-					</>
-				) : (
-					<Login />
-				)}
-			</div>
+		<div className='flex flex-col justify-between items-center py-4'>
+			<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4'>
+				Hello, {session.user.name}
+			</h1>
+			<Suspense fallback={<PlaylistSkeletonCards />}>
+				<PlaylistCollection />
+			</Suspense>
 		</div>
 	);
 }
