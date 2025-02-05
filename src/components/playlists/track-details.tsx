@@ -1,15 +1,14 @@
 import { Track } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
 import { Icons } from '../layout/icons';
+import { formattedDuration, getDuration } from '@/lib/utils';
 
 interface Props {
 	track: Track;
 }
 
 export default function TrackDetails({ track }: Props) {
-	const minutes = Math.floor(track.duration_ms / 60000);
-	const seconds = (track.duration_ms % 60000) / 1000;
-	const duration = `${minutes}:${seconds.toFixed(0).padStart(2, '0')}`;
+	const { minutes, seconds } = getDuration(track.duration_ms);
 	const image = track.album.images.reverse().find((img) => img !== undefined);
 	const artists = track.artists.map((artist) => artist.name).join(', ');
 
@@ -31,7 +30,7 @@ export default function TrackDetails({ track }: Props) {
 				<p className='text-sm text-muted-foreground'>{artists}</p>
 			</div>
 			<p className='text-muted-foreground'>{track.album.name}</p>
-			<p className='font-medium'>{duration}</p>
+			<p className='font-medium'>{formattedDuration(seconds, minutes)}</p>
 		</div>
 	);
 }

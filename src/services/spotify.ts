@@ -50,8 +50,6 @@ export async function getPlaylists({
 		return { error };
 	}
 
-	console.log({ spotifyUserId });
-
 	return {
 		playlists: playlists?.items.filter((p) => p.owner.id === spotifyUserId),
 	};
