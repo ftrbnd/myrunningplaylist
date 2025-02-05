@@ -9,13 +9,10 @@ export default async function PlaylistCollection() {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
-	const { playlists, error } = await getPlaylists({
+	const { playlists } = await getPlaylists({
 		token: session?.account.accessToken,
 		spotifyUserId: session?.account.accountId,
 	});
-
-	if (error?.status === 401) throw new Error('Spotify token expired');
-	if (error) throw new Error(error.message);
 
 	if (!playlists || playlists.length === 0)
 		return (

@@ -19,12 +19,11 @@ export default async function Page({ params }: Props) {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
-	const { playlist, error } = await getPlaylist({
+	const { playlist } = await getPlaylist({
 		token: session?.account.accessToken,
 		id: playlistId,
 	});
 
-	if (error) throw new Error(error.message);
 	if (!playlist) throw new Error('Playlist was not found.');
 
 	const runtimeMs = playlist.tracks.items.reduce(
@@ -57,7 +56,7 @@ export default async function Page({ params }: Props) {
 			<ul className='flex flex-col gap-2'>
 				{playlist.tracks.items.map(({ track }, i) => (
 					<li
-						key={track.id}
+						key={track.id ?? Math.random()}
 						className='flex flex-col gap-1'>
 						<div className='flex gap-1'>
 							{i === 0 && <Badge variant='green'>Start</Badge>}

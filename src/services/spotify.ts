@@ -21,7 +21,7 @@ export async function getPlaylists({
 		throw new Error('Spotify access token and user id are both required');
 
 	const { data: playlists, error } = await $fetch<Page<Playlist>>(
-		'/me/playlists',
+		'/me/playlists?limit=50',
 		{
 			auth: {
 				type: 'Bearer',
@@ -30,9 +30,8 @@ export async function getPlaylists({
 		}
 	);
 
-	if (error) {
-		return { error };
-	}
+	if (error?.status === 401) throw new Error('Spotify token expired');
+	if (error) throw error;
 
 	return {
 		playlists: playlists?.items.filter((p) => p.owner.id === spotifyUserId),
@@ -58,9 +57,8 @@ export async function getPlaylist({
 		}
 	);
 
-	if (error) {
-		return { error };
-	}
+	if (error?.status === 401) throw new Error('Spotify token expired');
+	if (error) throw error;
 
 	return { playlist };
 }
