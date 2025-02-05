@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth';
-import { getAccountDetails, getPlaylist } from '@/services/spotify';
+import { getPlaylist } from '@/services/spotify';
 import { headers } from 'next/headers';
 import TrackDetails from '@/components/playlists/track-details';
 import {
@@ -17,11 +17,10 @@ export default async function Page({ params }: Props) {
 	const playlistId = (await params).playlistId;
 
 	const session = await auth.api.getSession({
-		headers: await headers(), // you need to pass the headers object.
+		headers: await headers(),
 	});
-	const { accessToken } = await getAccountDetails({ userId: session?.user.id });
 	const { playlist, error } = await getPlaylist({
-		token: accessToken,
+		token: session?.account.accessToken,
 		id: playlistId,
 	});
 

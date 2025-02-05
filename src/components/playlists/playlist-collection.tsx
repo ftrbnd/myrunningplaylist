@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth';
-import { getAccountDetails, getPlaylists } from '@/services/spotify';
+import { getPlaylists } from '@/services/spotify';
 import PlaylistCard from './playlist-card';
 import { headers } from 'next/headers';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
@@ -7,16 +7,14 @@ import { AlertCircle } from 'lucide-react';
 
 export default async function PlaylistCollection() {
 	const session = await auth.api.getSession({
-		headers: await headers(), // you need to pass the headers object.
-	});
-	const { accessToken, accountId } = await getAccountDetails({
-		userId: session?.user.id,
+		headers: await headers(),
 	});
 	const { playlists, error } = await getPlaylists({
-		token: accessToken,
-		spotifyUserId: accountId,
+		token: session?.account.accessToken,
+		spotifyUserId: session?.account.accountId,
 	});
 
+	if (error?.status === 401) throw new Error('Spotify token expired');
 	if (error) throw new Error(error.message);
 
 	if (!playlists || playlists.length === 0)
