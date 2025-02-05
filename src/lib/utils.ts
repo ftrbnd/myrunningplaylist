@@ -43,3 +43,8 @@ export function durationDescription(
 
 	return h + m + `${seconds} seconds`;
 }
+
+export const raceDistances = {
+	metric: ['400m', '800m', '1K', '5K', '10K', '15K', '20K', '30K', '50K'],
+	imperial: ['1 mile', '2 miles', '10 miles', 'Half-marathon', 'Marathon'],
+} as const;

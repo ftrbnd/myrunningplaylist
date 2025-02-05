@@ -8,6 +8,8 @@ import {
 	getDuration,
 } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { RaceForm } from '@/components/playlists/race-form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Props {
 	params: Promise<{ playlistId: string }>;
@@ -53,25 +55,39 @@ export default async function Page({ params }: Props) {
 					Total runtime: {durationDescription(seconds, minutes, hours)}
 				</p>
 			</div>
-			<ul className='flex flex-col gap-2'>
-				{playlist.tracks.items.map(({ track }, i) => (
-					<li
-						key={track.id ?? Math.random()}
-						className='flex flex-col gap-1'>
-						<div className='flex gap-1'>
-							{i === 0 && <Badge variant='green'>Start</Badge>}
-							<p className='font-medium underline'>{getStartingTimestamp(i)}</p>
-						</div>
-						<TrackDetails track={track} />
+			<div className='flex flex-col gap-2 md:grid md:grid-cols-2'>
+				<Card className=' h-min w-full md:w-min md:col-start-2 md:row-start-1 md:justify-self-end'>
+					<CardHeader>
+						<CardTitle className='scroll-m-20 text-xl font-semibold tracking-tight'>
+							Select your race
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<RaceForm />
+					</CardContent>
+				</Card>
+				<ul className='flex flex-col gap-2 md:col-start-1 md:row-start-1'>
+					{playlist.tracks.items.map(({ track }, i) => (
+						<li
+							key={track.id ?? Math.random()}
+							className='flex flex-col gap-1'>
+							<div className='flex gap-1'>
+								{i === 0 && <Badge variant='green'>Start</Badge>}
+								<p className='font-medium underline'>
+									{getStartingTimestamp(i)}
+								</p>
+							</div>
+							<TrackDetails track={track} />
+						</li>
+					))}
+					<li className='flex gap-1'>
+						<Badge variant='destructive'>Finish</Badge>
+						<p className='font-medium underline'>
+							{formattedDuration(seconds, minutes, hours)}
+						</p>
 					</li>
-				))}
-				<li className='flex gap-1'>
-					<Badge variant='destructive'>Finish</Badge>
-					<p className='font-medium underline'>
-						{formattedDuration(seconds, minutes, hours)}
-					</p>
-				</li>
-			</ul>
+				</ul>
+			</div>
 		</div>
 	);
 }
