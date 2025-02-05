@@ -1,7 +1,13 @@
 import { Track } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
-import { Icons } from '../layout/icons';
+import { Icons } from '@/components/layout/icons';
 import { formattedDuration, getDuration } from '@/lib/utils';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface Props {
 	track: Track;
@@ -25,12 +31,35 @@ export default function TrackDetails({ track }: Props) {
 			) : (
 				<Icons.localFile />
 			)}
-			<div className='flex-1 space-y-1'>
-				<p className='font-medium leading-none'>{track.name}</p>
-				<p className='text-sm text-muted-foreground'>{artists}</p>
-			</div>
-			<p className='text-muted-foreground'>{track.album.name}</p>
-			<p className='font-medium'>{formattedDuration(seconds, minutes)}</p>
+			<TooltipProvider>
+				<div className='flex-1 space-y-1'>
+					<Tooltip>
+						<TooltipTrigger className='font-medium leading-none line-clamp-1'>
+							{track.name}
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>{track.name}</p>
+						</TooltipContent>
+					</Tooltip>
+					<Tooltip>
+						<TooltipTrigger className='text-sm text-muted-foreground line-clamp-1'>
+							{artists}
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>{artists}</p>
+						</TooltipContent>
+					</Tooltip>
+				</div>
+				<Tooltip>
+					<TooltipTrigger className='text-muted-foreground line-clamp-1'>
+						{track.album.name}
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>{track.album.name}</p>
+					</TooltipContent>
+				</Tooltip>
+				<p className='font-medium'>{formattedDuration(seconds, minutes)}</p>
+			</TooltipProvider>
 		</div>
 	);
 }
