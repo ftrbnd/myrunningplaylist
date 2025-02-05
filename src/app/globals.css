@@ -153,4 +153,12 @@
 	.container {
 		@apply px-4 xl:px-6 2xl:px-4 mx-auto max-w-[1536px];
 	}
+
+	.playlist-card {
+		@apply flex md:flex-col gap-2 items-center space-x-4 h-full rounded-md border p-4 md:max-w-xl;
+	}
+
+	.card-grid {
+		@apply flex-1 flex flex-col md:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
+	}
 }

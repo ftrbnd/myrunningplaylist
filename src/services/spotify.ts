@@ -13,7 +13,7 @@ export const $fetch = createFetch({
 	},
 });
 
-export async function getAccessToken({ userId }: { userId?: string }) {
+export async function getAccountDetails({ userId }: { userId?: string }) {
 	if (!userId) throw new Error('User id is required');
 
 	const accounts = await db
@@ -24,10 +24,16 @@ export async function getAccessToken({ userId }: { userId?: string }) {
 	if (accounts.length === 0)
 		throw new Error('No account found with matching user id');
 
-	return accounts[0].accessToken;
+	return accounts[0];
 }
 
-export async function getPlaylists({ token }: { token?: string | null }) {
+export async function getPlaylists({
+	token,
+	spotifyUserId,
+}: {
+	token?: string | null;
+	spotifyUserId: string;
+}) {
 	if (!token) throw new Error('Access token is required');
 
 	const { data: playlists, error } = await $fetch<Page<Playlist>>(
@@ -44,7 +50,11 @@ export async function getPlaylists({ token }: { token?: string | null }) {
 		return { error };
 	}
 
-	return { playlists: playlists?.items };
+	console.log({ spotifyUserId });
+
+	return {
+		playlists: playlists?.items.filter((p) => p.owner.id === spotifyUserId),
+	};
 }
 
 export async function getPlaylist({

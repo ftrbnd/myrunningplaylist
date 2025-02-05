@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -29,8 +30,12 @@ export const Icons = {
 		</svg>
 	),
 	spotify: () => <FontAwesomeIcon icon={faSpotify} />,
-	localFile: (props: IconProps) => (
-		<div className='w-16 h-16 rounded-md bg-muted flex justify-center items-center'>
+	localFile: ({ className, ...props }: IconProps) => (
+		<div
+			className={cn(
+				'w-16 h-16 rounded-md bg-muted flex justify-center items-center',
+				className
+			)}>
 			<svg
 				width='24'
 				height='24'
