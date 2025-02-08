@@ -1,8 +1,8 @@
 import { auth } from '@/lib/auth';
 import { getPlaylists } from '@/services/spotify';
-import PlaylistCard from './playlist-card';
+import PlaylistCard from '@/components/playlists/playlist-card';
 import { headers } from 'next/headers';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
 export default async function PlaylistCollection() {

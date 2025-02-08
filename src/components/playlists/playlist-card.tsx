@@ -3,7 +3,7 @@
 import { Playlist, TrackItem } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Icons } from '../layout/icons';
+import { Icons } from '@/components/layout/icons';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
