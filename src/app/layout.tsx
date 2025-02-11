@@ -6,6 +6,7 @@ import { META_THEME_COLORS, siteConfig } from '@/config/site';
 import { SiteHeader } from '@/components/layout/site-header';
 import SiteFooter from '@/components/layout/site-footer';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@/components/ui/sonner';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -70,6 +71,7 @@ export default function RootLayout({
 						</div>
 					</div>
 				</ThemeProvider>
+				<Toaster />
 			</body>
 		</html>
 	);

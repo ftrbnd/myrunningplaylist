@@ -19,7 +19,11 @@ export const auth = betterAuth({
 		spotify: {
 			clientId: process.env.SPOTIFY_CLIENT_ID!,
 			clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
-			scope: ['playlist-read-private'],
+			scope: [
+				'playlist-read-private',
+				'playlist-modify-public',
+				'playlist-modify-private',
+			],
 		},
 	},
 	plugins: [
