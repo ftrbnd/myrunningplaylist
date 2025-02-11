@@ -25,9 +25,9 @@ export default async function PlaylistCollection() {
 
 	return (
 		<ul className='card-grid'>
-			{playlists.map((playlist) => (
+			{playlists.map((playlist, i) => (
 				<li
-					key={playlist.id}
+					key={`${playlist.id}-${i}`}
 					className='h-full'>
 					<PlaylistCard playlist={playlist} />
 				</li>

@@ -69,22 +69,22 @@ export default async function Page({ params }: Props) {
 				<ul className='flex flex-col gap-2 md:col-start-1 md:row-start-1'>
 					{playlist.tracks.items.map(({ track }, i) => (
 						<li
-							key={track.id ?? Math.random()}
+							key={`${track.id}-${i}`}
 							className='flex flex-col gap-1'>
 							<div className='flex gap-1'>
-								{i === 0 && <Badge variant='green'>Start</Badge>}
-								<p className='font-medium underline'>
-									{getStartingTimestamp(i)}
-								</p>
+								{i === 0 ? (
+									<Badge variant='green'>Start: 00:00</Badge>
+								) : (
+									<Badge variant='yellow'>{getStartingTimestamp(i)}</Badge>
+								)}
 							</div>
 							<TrackDetails track={track} />
 						</li>
 					))}
 					<li className='flex gap-1'>
-						<Badge variant='destructive'>Finish</Badge>
-						<p className='font-medium underline'>
-							{formattedDuration(seconds, minutes, hours)}
-						</p>
+						<Badge variant='destructive'>
+							Finish: {formattedDuration(seconds, minutes, hours)}
+						</Badge>
 					</li>
 				</ul>
 			</div>
