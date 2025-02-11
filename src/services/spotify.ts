@@ -62,3 +62,41 @@ export async function getPlaylist({
 
 	return { playlist };
 }
+
+export async function reorderPlaylist({
+	token,
+	playlist,
+	rangeStart,
+	insertBefore,
+	rangeLength,
+}: {
+	token?: string | null;
+	playlist: Playlist<Track>;
+	rangeStart: number;
+	insertBefore: number;
+	rangeLength: number;
+}) {
+	if (!token) throw new Error('Access token is required');
+
+	const { data, error } = await $fetch<{ snapshot_id: string }>(
+		`/playlists/${playlist.id}/tracks`,
+		{
+			auth: {
+				type: 'Bearer',
+				token,
+			},
+			method: 'PUT',
+			body: {
+				range_start: rangeStart,
+				insert_before: insertBefore,
+				range_length: rangeLength,
+				snapshot_id: playlist.snapshot_id,
+			},
+		}
+	);
+
+	if (error?.status === 401) throw new Error('Spotify token expired');
+	if (error) throw error;
+
+	return data;
+}

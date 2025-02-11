@@ -1,25 +1,30 @@
 import { Track } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
 import { Icons } from '@/components/layout/icons';
-import { formattedDuration, getDuration } from '@/lib/utils';
+import { cn, formattedDuration, getDuration } from '@/lib/utils';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { ComponentProps } from 'react';
 
-interface Props {
+interface Props extends ComponentProps<'div'> {
 	track: Track;
 }
 
-export default function TrackDetails({ track }: Props) {
+export default function TrackDetails({ track, ...props }: Props) {
 	const { minutes, seconds } = getDuration(track.duration_ms);
 	const image = track.album.images.reverse().find((img) => img !== undefined);
 	const artists = track.artists.map((artist) => artist.name).join(', ');
 
 	return (
-		<div className='flex items-center space-x-4 rounded-md border p-4 md:max-w-xl'>
+		<div
+			className={cn(
+				'flex items-center space-x-4 rounded-md border p-4 md:max-w-xl',
+				props.className
+			)}>
 			{image ? (
 				<Image
 					className='w-16 h-16 rounded-md'
