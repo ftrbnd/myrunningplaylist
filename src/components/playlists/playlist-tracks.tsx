@@ -9,11 +9,32 @@ import TrackDetails from '@/components/playlists/track-details';
 import { reorderPlaylist } from '@/services/spotify';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
+import { useEffect, useState } from 'react';
 
 const { useSession } = authClient;
 
 export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 	const { data } = useSession();
+
+	const [playlistCopy, setPlaylistCopy] = useState(playlist);
+	const isReordered = playlistCopy.tracks.items.some(
+		({ track }, i) => playlist.tracks.items.at(i)?.track.id !== track.id
+	);
+	// TODO: add a state to keep track of reordered tracks
+
+	useEffect(() => {
+		if (isReordered) {
+			toast('Save changes?', {
+				duration: Infinity,
+				action: {
+					label: 'Save',
+					onClick: () => console.log('TODO: implement'),
+				},
+			});
+		} else {
+			toast.dismiss();
+		}
+	}, [isReordered]);
 
 	const getStartingTimestamp = (trackIndex: number) => {
 		const tracksBefore = playlist.tracks.items.filter((_, i) => i < trackIndex);
@@ -32,7 +53,26 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 	);
 	const { hours, minutes, seconds } = getDuration(runtimeMs);
 
-	const handleReorder = async (index: number, direction: 'up' | 'down') => {
+	const handleReorder = (index: number, direction: 'up' | 'down') => {
+		setPlaylistCopy((prev) => {
+			const [track] = prev.tracks.items.splice(index, 1);
+			prev.tracks.items.splice(
+				direction === 'up' ? index - 1 : index + 1,
+				0,
+				track
+			);
+
+			return {
+				...prev,
+				tracks: {
+					...prev.tracks,
+					items: [...prev.tracks.items],
+				},
+			};
+		});
+	};
+
+	const submitReorder = async (index: number, direction: 'up' | 'down') => {
 		const reorder = reorderPlaylist({
 			token: data?.account.accessToken,
 			playlist,
@@ -52,7 +92,7 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 
 	return (
 		<ul className='flex flex-col gap-2 md:col-start-1 md:row-start-1'>
-			{playlist.tracks.items.map(({ track }, i) => (
+			{playlistCopy.tracks.items.map(({ track }, i) => (
 				<li
 					key={`${track.id}-${i}`}
 					className='flex flex-col gap-1'>
@@ -67,12 +107,14 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 						<div className='grid grid-rows-2 gap-1'>
 							<Button
 								onClick={() => handleReorder(i, 'up')}
+								disabled={i === 0}
 								variant='outline'
 								size='icon'>
 								<ArrowUp />
 							</Button>
 							<Button
 								onClick={() => handleReorder(i, 'down')}
+								disabled={i === playlistCopy.tracks.items.length - 1}
 								variant='outline'
 								size='icon'>
 								<ArrowDown />
