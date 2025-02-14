@@ -22,7 +22,7 @@ export default function TrackDetails({ track, ...props }: Props) {
 	return (
 		<div
 			className={cn(
-				'flex items-center space-x-4 rounded-md border p-4 md:max-w-xl',
+				'bg-card flex items-center space-x-4 rounded-md border p-4 md:max-w-xl',
 				props.className
 			)}>
 			{image ? (
