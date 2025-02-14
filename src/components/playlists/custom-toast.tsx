@@ -1,42 +1,23 @@
-'use client';
-
-import React from 'react';
-import { toast as sonnerToast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
-interface CustomProps {
+interface Props {
 	isReordered: boolean;
 	reset: () => void;
 	save: () => void;
-	id?: string | number;
+	id: string;
 }
 
-export function toast(props: CustomProps) {
-	if (!props.isReordered) {
-		return sonnerToast.dismiss();
-	}
+export function customToast(props: Props) {
+	if (!props.isReordered) return toast.dismiss();
 
-	return sonnerToast.custom(
-		(id) => (
-			<Toast
-				{...props}
-				id={id}
-			/>
-		),
-		{
-			duration: Infinity,
-		}
-	);
+	toast.custom(() => <CustomToast {...props} />, {
+		duration: Infinity,
+		id: props.id,
+	});
 }
 
-function Toast(props: CustomProps) {
-	const { reset, save, id } = props;
-
-	const handleReset = () => {
-		reset();
-		sonnerToast.dismiss(id);
-	};
-
+export function CustomToast({ reset, save }: Props) {
 	return (
 		<div className='flex gap-4 bg-card rounded-md shadow-lg ring-1 ring-black/5 w-full md:max-w-[400px] space-x-16 items-center justify-between p-4'>
 			<div className='flex flex-1'>
@@ -47,7 +28,7 @@ function Toast(props: CustomProps) {
 			<div className='flex gap-2 items-center'>
 				<Button
 					variant='destructive'
-					onClick={handleReset}>
+					onClick={reset}>
 					Reset
 				</Button>
 				<Button onClick={save}>Save</Button>

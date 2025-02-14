@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import TrackDetails from '@/components/playlists/track-details';
 import { reorderPlaylist } from '@/services/spotify';
 import { authClient } from '@/lib/auth-client';
-import { toast } from '@/components/playlists/toast';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { customToast } from '@/components/playlists/custom-toast';
+import { toast } from 'sonner';
 
 const { useSession } = authClient;
 
@@ -20,15 +21,45 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 	const isReordered = playlistCopy.tracks.items.some(
 		({ track }, i) => playlist.tracks.items.at(i)?.track.id !== track.id
 	);
-	// TODO: add a state to keep track of reordered tracks
+
+	const submitReorder = useCallback(() => {
+		const promises = playlistCopy.tracks.items
+			.map(({ track }, newIndex) => {
+				const original = playlist.tracks.items;
+				if (original.at(newIndex)?.track.uri === track.uri) return;
+
+				const originalIndex = original.findIndex(
+					({ track: t }) => t.uri === track.uri
+				);
+
+				return reorderPlaylist({
+					token: data?.account.accessToken,
+					playlist,
+					rangeStart: originalIndex,
+					insertBefore: newIndex + 1,
+					rangeLength: 1,
+				});
+			})
+			.filter((p) => p !== undefined);
+
+		toast.dismiss(playlist.id);
+		toast.promise(Promise.all(promises), {
+			loading: 'Loading...',
+			success: (data) => {
+				return `${data.length} tracks have been reordered`;
+			},
+			error: 'Error',
+		});
+	}, [data?.account.accessToken, playlist, playlistCopy.tracks.items]);
 
 	useEffect(() => {
-		toast({
+		customToast({
 			isReordered,
 			reset: () => setPlaylistCopy(playlist),
-			save: () => console.log('idk'),
+			save: submitReorder,
+			id: playlist.id,
 		});
-	}, [isReordered, playlist]);
+	}, [isReordered, playlist, submitReorder]);
 
 	const getStartingTimestamp = (trackIndex: number) => {
 		const tracksBefore = playlist.tracks.items.filter((_, i) => i < trackIndex);
@@ -64,18 +95,6 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 				},
 			};
 		});
-	};
-
-	const submitReorder = async (index: number, direction: 'up' | 'down') => {
-		const { snapshot_id } = await reorderPlaylist({
-			token: data?.account.accessToken,
-			playlist,
-			rangeStart: index,
-			insertBefore: direction === 'up' ? index - 1 : index + 1,
-			rangeLength: 1,
-		});
-
-		return snapshot_id;
 	};
 
 	const trackIsOutOfOrder = (index: number, track: Track) => {
