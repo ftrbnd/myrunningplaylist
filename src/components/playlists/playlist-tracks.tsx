@@ -1,6 +1,6 @@
 'use client';
 
-import { formattedDuration, getDuration } from '@/lib/utils';
+import { cn, formattedDuration, getDuration } from '@/lib/utils';
 import { Playlist, Track } from '@spotify/web-api-ts-sdk';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUp, ArrowDown } from 'lucide-react';
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import TrackDetails from '@/components/playlists/track-details';
 import { reorderPlaylist } from '@/services/spotify';
 import { authClient } from '@/lib/auth-client';
-import { toast } from 'sonner';
+import { toast } from '@/components/playlists/toast';
 import { useEffect, useState } from 'react';
 
 const { useSession } = authClient;
@@ -23,18 +23,12 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 	// TODO: add a state to keep track of reordered tracks
 
 	useEffect(() => {
-		if (isReordered) {
-			toast('Save changes?', {
-				duration: Infinity,
-				action: {
-					label: 'Save',
-					onClick: () => console.log('TODO: implement'),
-				},
-			});
-		} else {
-			toast.dismiss();
-		}
-	}, [isReordered]);
+		toast({
+			isReordered,
+			reset: () => setPlaylistCopy(playlist),
+			save: () => console.log('idk'),
+		});
+	}, [isReordered, playlist]);
 
 	const getStartingTimestamp = (trackIndex: number) => {
 		const tracksBefore = playlist.tracks.items.filter((_, i) => i < trackIndex);
@@ -73,7 +67,7 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 	};
 
 	const submitReorder = async (index: number, direction: 'up' | 'down') => {
-		const reorder = reorderPlaylist({
+		const { snapshot_id } = await reorderPlaylist({
 			token: data?.account.accessToken,
 			playlist,
 			rangeStart: index,
@@ -81,40 +75,41 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 			rangeLength: 1,
 		});
 
-		toast.promise(reorder, {
-			loading: 'Reordering...',
-			success: (data) => {
-				return `Reordered playlist snapshot#${data.snapshot_id} `;
-			},
-			error: 'Error',
-		});
+		return snapshot_id;
+	};
+
+	const trackIsOutOfOrder = (index: number, track: Track) => {
+		const original = playlist.tracks.items.at(index)?.track;
+		if (!original) return false;
+
+		return original.uri !== track.uri;
 	};
 
 	return (
 		<ul className='flex flex-col gap-2 md:col-start-1 md:row-start-1'>
-			{playlistCopy.tracks.items.map(({ track }, i) => (
+			{playlistCopy.tracks.items.map(({ track }, index) => (
 				<li
-					key={`${track.id}-${i}`}
+					key={`${track.id}-${index}`}
 					className='flex flex-col gap-1'>
 					<div className='flex gap-1'>
-						{i === 0 ? (
+						{index === 0 ? (
 							<Badge variant='green'>Start: 00:00</Badge>
 						) : (
-							<Badge variant='yellow'>{getStartingTimestamp(i)}</Badge>
+							<Badge variant='yellow'>{getStartingTimestamp(index)}</Badge>
 						)}
 					</div>
 					<div className='flex gap-2 items-center'>
 						<div className='grid grid-rows-2 gap-1'>
 							<Button
-								onClick={() => handleReorder(i, 'up')}
-								disabled={i === 0}
+								onClick={() => handleReorder(index, 'up')}
+								disabled={index === 0}
 								variant='outline'
 								size='icon'>
 								<ArrowUp />
 							</Button>
 							<Button
-								onClick={() => handleReorder(i, 'down')}
-								disabled={i === playlistCopy.tracks.items.length - 1}
+								onClick={() => handleReorder(index, 'down')}
+								disabled={index === playlistCopy.tracks.items.length - 1}
 								variant='outline'
 								size='icon'>
 								<ArrowDown />
@@ -122,7 +117,10 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 						</div>
 						<TrackDetails
 							track={track}
-							className='flex-1'
+							className={cn(
+								'flex-1',
+								trackIsOutOfOrder(index, track) && 'border-primary'
+							)}
 						/>
 					</div>
 				</li>
