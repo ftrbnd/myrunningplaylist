@@ -6,6 +6,7 @@ import { META_THEME_COLORS, siteConfig } from '@/config/site';
 import { SiteHeader } from '@/components/layout/site-header';
 import SiteFooter from '@/components/layout/site-footer';
 import { cn } from '@/lib/utils';
+import MyQueryClientProvider from '@/providers/query-client-provider';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -52,24 +53,26 @@ export default function RootLayout({
 					geistSans.variable,
 					geistMono.variable
 				)}>
-				<ThemeProvider
-					attribute='class'
-					defaultTheme='system'
-					enableSystem
-					disableTransitionOnChange
-					enableColorScheme>
-					<div vaul-drawer-wrapper=''>
-						<div className='relative flex min-h-svh flex-col bg-background'>
-							<div
-								data-wrapper=''
-								className='border-grid flex flex-1 flex-col'>
-								<SiteHeader />
-								<main className='flex flex-1 flex-col p-4'>{children}</main>
-								<SiteFooter />
+				<MyQueryClientProvider>
+					<ThemeProvider
+						attribute='class'
+						defaultTheme='system'
+						enableSystem
+						disableTransitionOnChange
+						enableColorScheme>
+						<div vaul-drawer-wrapper=''>
+							<div className='relative flex min-h-svh flex-col bg-background'>
+								<div
+									data-wrapper=''
+									className='border-grid flex flex-1 flex-col'>
+									<SiteHeader />
+									<main className='flex flex-1 flex-col p-4'>{children}</main>
+									<SiteFooter />
+								</div>
 							</div>
 						</div>
-					</div>
-				</ThemeProvider>
+					</ThemeProvider>
+				</MyQueryClientProvider>
 			</body>
 		</html>
 	);
