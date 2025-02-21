@@ -32,7 +32,11 @@ const formSchema = z.object({
 	seconds: z.coerce.number().min(0).max(59),
 });
 
-export function RaceForm() {
+export function RaceForm({
+	disabledWhileLoading,
+}: {
+	disabledWhileLoading?: boolean;
+}) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
@@ -49,6 +53,7 @@ export function RaceForm() {
 				onSubmit={form.handleSubmit(onSubmit)}
 				className='flex flex-col items-start gap-2'>
 				<FormField
+					disabled={disabledWhileLoading}
 					control={form.control}
 					name='distance'
 					render={({ field }) => (
@@ -92,6 +97,7 @@ export function RaceForm() {
 				/>
 				<div className='flex justify-start gap-1'>
 					<FormField
+						disabled={disabledWhileLoading}
 						control={form.control}
 						name='hours'
 						render={({ field }) => (
@@ -110,6 +116,7 @@ export function RaceForm() {
 						)}
 					/>
 					<FormField
+						disabled={disabledWhileLoading}
 						control={form.control}
 						name='minutes'
 						render={({ field }) => (
@@ -129,6 +136,7 @@ export function RaceForm() {
 						)}
 					/>
 					<FormField
+						disabled={disabledWhileLoading}
 						control={form.control}
 						name='seconds'
 						render={({ field }) => (
@@ -149,6 +157,7 @@ export function RaceForm() {
 					/>
 				</div>
 				<Button
+					disabled={disabledWhileLoading}
 					type='submit'
 					className='self-center'>
 					Submit

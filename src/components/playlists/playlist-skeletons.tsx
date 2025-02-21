@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-function SkeletonCard() {
+function PlaylistSkeleton() {
 	return (
 		<div className='playlist-card'>
 			<Skeleton className='h-16 w-16 md:h-32 md:w-32' />
@@ -15,14 +15,14 @@ function SkeletonCard() {
 	);
 }
 
-export default function PlaylistSkeletonCards() {
+export function PlaylistSkeletons() {
 	return (
 		<ul className='card-grid'>
 			{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((v) => (
 				<li
 					key={v}
 					className='h-full'>
-					<SkeletonCard />
+					<PlaylistSkeleton />
 				</li>
 			))}
 		</ul>
