@@ -11,11 +11,13 @@ import { authClient } from '@/lib/auth-client';
 import { useCallback, useEffect, useState } from 'react';
 import { customToast } from '@/components/playlists/custom-toast';
 import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const { useSession } = authClient;
 
 export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 	const { data } = useSession();
+	const queryClient = useQueryClient();
 
 	const [playlistCopy, setPlaylistCopy] = useState(playlist);
 	const isReordered = playlistCopy.tracks.items.some(
@@ -60,6 +62,47 @@ export function PlaylistTracks({ playlist }: { playlist: Playlist<Track> }) {
 			id: playlist.id,
 		});
 	}, [isReordered, playlist, submitReorder]);
+
+	// TODO: move mutation to hook, fix toasts
+	const mutation = useMutation({
+		mutationFn: async () => {
+			const promises = playlistCopy.tracks.items
+				.map(({ track }, newIndex) => {
+					const original = playlist.tracks.items;
+					if (original.at(newIndex)?.track.uri === track.uri) return;
+
+					const originalIndex = original.findIndex(
+						({ track: t }) => t.uri === track.uri
+					);
+
+					return reorderPlaylist({
+						token: data?.account.accessToken,
+						playlist,
+						rangeStart: originalIndex,
+						insertBefore: newIndex + 1,
+						rangeLength: 1,
+					});
+				})
+				.filter((p) => p !== undefined);
+
+			const snapshot_ids = await Promise.all(promises);
+			return snapshot_ids;
+		},
+		onError: () => {
+			// An error happened!
+			toast.dismiss();
+			toast.error(`Failed to reorder playlist`);
+		},
+		onSuccess: (data) => {
+			// Boom baby!
+			toast.dismiss();
+			toast.success(`${data.length} tracks have been reordered`);
+			queryClient.invalidateQueries({ queryKey: ['playlists', playlist.id] });
+		},
+		// onSettled: (data, error, variables, context) => {
+		// 	// Error or success... doesn't matter!
+		// },
+	});
 
 	const getStartingTimestamp = (trackIndex: number) => {
 		const tracksBefore = playlist.tracks.items.filter((_, i) => i < trackIndex);

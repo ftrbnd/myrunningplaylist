@@ -43,9 +43,10 @@ export async function getPlaylist({
 	id,
 }: {
 	token?: string | null;
-	id: string;
+	id?: string;
 }) {
-	if (!token) throw new Error('Access token is required');
+	if (!token || !id)
+		throw new Error('Access token and playlist id are required');
 
 	const { data: playlist, error } = await $fetch<Playlist<Track>>(
 		`/playlists/${id}`,

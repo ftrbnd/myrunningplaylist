@@ -1,26 +1,12 @@
 'use client';
 
-import { getPlaylists } from '@/services/spotify';
 import PlaylistCard from '@/components/playlists/playlist-card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
-import { authClient } from '@/lib/auth-client';
-import { useSuspenseQuery } from '@tanstack/react-query';
-
-const { useSession } = authClient;
+import { usePlaylists } from '@/hooks/usePlaylists';
 
 export default function PlaylistCollection() {
-	const { data: session } = useSession();
-	const {
-		data: { playlists },
-	} = useSuspenseQuery({
-		queryKey: ['playlists'],
-		queryFn: () =>
-			getPlaylists({
-				token: session?.account.accessToken,
-				spotifyUserId: session?.account.accountId,
-			}),
-	});
+	const { playlists } = usePlaylists();
 
 	if (!playlists || playlists.length === 0)
 		return (

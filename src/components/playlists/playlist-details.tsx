@@ -1,33 +1,13 @@
 'use client';
 
-import { authClient } from '@/lib/auth-client';
-import { durationDescription, getDuration } from '@/lib/utils';
-import { getPlaylist } from '@/services/spotify';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { durationDescription } from '@/lib/utils';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { PlaylistTracks } from '@/components/playlists/playlist-tracks';
 import { RaceForm } from '@/components/playlists/race-form';
-
-const { useSession } = authClient;
+import { usePlaylist } from '@/hooks/usePlaylist';
 
 export function PlaylistDetails({ id }: { id: string }) {
-	const { data: session } = useSession();
-	const {
-		data: { playlist },
-	} = useSuspenseQuery({
-		queryKey: ['playlists', id],
-		queryFn: () =>
-			getPlaylist({
-				token: session?.account.accessToken,
-				id,
-			}),
-	});
-
-	const runtimeMs = playlist.tracks.items.reduce(
-		(prev, cur) => prev + cur.track.duration_ms,
-		0
-	);
-	const { hours, minutes, seconds } = getDuration(runtimeMs);
+	const { playlist, duration } = usePlaylist(id);
 
 	return (
 		<div>
@@ -37,7 +17,12 @@ export function PlaylistDetails({ id }: { id: string }) {
 				</h1>
 
 				<p className='text-muted-foreground'>
-					Total runtime: {durationDescription(seconds, minutes, hours)}
+					Total runtime:{' '}
+					{durationDescription(
+						duration.seconds,
+						duration.minutes,
+						duration.hours
+					)}
 				</p>
 			</div>
 			<div className='flex flex-col gap-2 md:grid md:grid-cols-2'>
