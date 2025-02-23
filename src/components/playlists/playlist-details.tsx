@@ -7,7 +7,7 @@ import { RaceForm } from '@/components/playlists/race-form';
 import { usePlaylist } from '@/hooks/usePlaylist';
 
 export function PlaylistDetails({ id }: { id: string }) {
-	const { playlist, duration } = usePlaylist(id);
+	const { original: playlist, duration } = usePlaylist(id);
 
 	return (
 		<div>
@@ -36,7 +36,7 @@ export function PlaylistDetails({ id }: { id: string }) {
 						<RaceForm />
 					</CardContent>
 				</Card>
-				<PlaylistTracks playlist={playlist} />
+				<PlaylistTracks playlistId={playlist.id} />
 			</div>
 		</div>
 	);

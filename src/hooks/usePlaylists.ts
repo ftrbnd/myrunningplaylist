@@ -1,8 +1,8 @@
 import { authClient } from '@/lib/auth-client';
+import { PLAYLISTS_QUERY_KEY } from '@/lib/get-query-client';
 import { getPlaylists } from '@/services/spotify';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
-const QUERY_KEY = 'playlists' as const;
 const { useSession } = authClient;
 
 export function usePlaylists() {
@@ -11,7 +11,7 @@ export function usePlaylists() {
 	const {
 		data: { playlists },
 	} = useSuspenseQuery({
-		queryKey: [QUERY_KEY],
+		queryKey: [PLAYLISTS_QUERY_KEY],
 		queryFn: () =>
 			getPlaylists({
 				token: session?.account.accessToken,

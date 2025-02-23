@@ -4,6 +4,8 @@ import {
 	defaultShouldDehydrateQuery,
 } from '@tanstack/react-query';
 
+export const PLAYLISTS_QUERY_KEY = 'playlists' as const;
+
 function makeQueryClient() {
 	return new QueryClient({
 		defaultOptions: {
