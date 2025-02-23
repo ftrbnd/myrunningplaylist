@@ -1,5 +1,3 @@
-import { Toaster } from '@/components/ui/sonner';
-
 export default function PlaylistLayout({
 	children,
 }: {
@@ -8,7 +6,7 @@ export default function PlaylistLayout({
 	return (
 		<section>
 			{children}
-			<Toaster />
+			{/* TODO: add a toast provider? */}
 		</section>
 	);
 }

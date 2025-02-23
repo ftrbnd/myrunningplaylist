@@ -25,8 +25,8 @@ export function usePlaylist(playlistId: string) {
 				id: playlistId,
 			}),
 	});
-	const [copy, setCopy] = useState(playlist);
 
+	const [copy, setCopy] = useState(playlist);
 	const copyIsReordered = copy.tracks.items.some(
 		({ track }, i) => playlist.tracks.items.at(i)?.track.id !== track.id
 	);
@@ -80,18 +80,11 @@ export function usePlaylist(playlistId: string) {
 			const snapshot_ids = await Promise.all(promises);
 			return snapshot_ids;
 		},
-		onError: () => {
-			// An error happened!
-		},
 		onSuccess: () => {
-			// Boom baby!
 			queryClient.invalidateQueries({
 				queryKey: [PLAYLISTS_QUERY_KEY, playlist.id],
 			});
 		},
-		// onSettled: (data, error, variables, context) => {
-		// 	// Error or success... doesn't matter!
-		// },
 	});
 
 	return {
@@ -101,6 +94,6 @@ export function usePlaylist(playlistId: string) {
 		copyIsReordered,
 		resetCopy: () => setCopy(playlist),
 		handleReorder,
-		submitReorder: mutation,
+		submitReorder: mutation.mutate,
 	};
 }

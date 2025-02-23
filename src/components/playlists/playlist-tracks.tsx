@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import TrackDetails from '@/components/playlists/track-details';
 import { usePlaylist } from '@/hooks/usePlaylist';
 
-// TODO: show toast to call playlist.submitReorder()
 export function PlaylistTracks({ playlistId }: { playlistId: string }) {
 	const playlist = usePlaylist(playlistId);
 

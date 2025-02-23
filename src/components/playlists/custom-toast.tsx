@@ -1,20 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 
 interface Props {
-	isReordered: boolean;
 	reset: () => void;
 	save: () => void;
-	id: string;
-}
-
-export function customToast(props: Props) {
-	if (!props.isReordered) return toast.dismiss();
-
-	toast.custom(() => <CustomToast {...props} />, {
-		duration: Infinity,
-		id: props.id,
-	});
 }
 
 export function CustomToast({ reset, save }: Props) {
