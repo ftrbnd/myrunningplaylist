@@ -18,7 +18,7 @@ export default function Error({
 	}
 
 	return (
-		<div className='flex flex-1 flex-col w-full justify-center items-center'>
+		<div className='flex-col-full w-full justify-center items-center'>
 			<Alert
 				variant='destructive'
 				className='md:max-w-xl'>

@@ -64,9 +64,13 @@ export default function RootLayout({
 							<div className='relative flex min-h-svh flex-col bg-background'>
 								<div
 									data-wrapper=''
-									className='border-grid flex flex-1 flex-col'>
+									className='border-grid flex-col-full'>
 									<SiteHeader />
-									<main className='flex flex-1 flex-col p-4'>{children}</main>
+									<div className='container-wrapper flex-col-full'>
+										<div className='container py-4 flex-col-full'>
+											<main className='p-4 flex-col-full'>{children}</main>
+										</div>
+									</div>
 									<SiteFooter />
 								</div>
 							</div>

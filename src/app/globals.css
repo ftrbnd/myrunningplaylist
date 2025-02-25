@@ -145,4 +145,8 @@
 	.card-grid {
 		@apply flex-1 flex flex-col md:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
 	}
+
+	.flex-col-full {
+		@apply flex-1 flex flex-col h-full;
+	}
 }
