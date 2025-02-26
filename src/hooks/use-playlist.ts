@@ -34,12 +34,12 @@ export function usePlaylist(playlistId: string) {
 	const {
 		playlist: copy,
 		reorderTrack,
-		reset,
+		setPlaylist: setCopy,
 	} = usePlaylistStore(JSON.parse(JSON.stringify(playlist)), (state) => state);
 
 	const resetCopy = async () => {
 		const { data } = await refetch();
-		if (data?.playlist) reset(data?.playlist);
+		if (data?.playlist) setCopy(data?.playlist);
 	};
 
 	const copyIsReordered = copy.tracks.items.some(
@@ -104,6 +104,7 @@ export function usePlaylist(playlistId: string) {
 		removeTracks: removeTrackMutation.mutate,
 		// zustand
 		copy,
+		setCopy,
 		resetCopy,
 		handleReorder: reorderTrack,
 		// derived state

@@ -9,7 +9,7 @@ export type PlaylistState = {
 
 export type PlaylistActions = {
 	reorderTrack: (index: number, direction: 'up' | 'down') => void;
-	reset: (original: Playlist<Track>) => void;
+	setPlaylist: (newPlaylist: Playlist<Track>) => void;
 };
 
 export type PlaylistStore = PlaylistState & PlaylistActions;
@@ -37,11 +37,11 @@ export const createPlaylistStore = (initState: PlaylistState) => {
 					},
 				};
 			}),
-		reset: (original: Playlist<Track>) =>
+		setPlaylist: (newPlaylist: Playlist<Track>) =>
 			set((state) => {
 				return {
 					...state,
-					playlist: original,
+					playlist: newPlaylist,
 				};
 			}),
 	}));
