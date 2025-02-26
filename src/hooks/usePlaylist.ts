@@ -95,7 +95,7 @@ export function usePlaylist(playlistId: string) {
 		mutationFn: ({ trackUris }: { trackUris: string[] }) =>
 			removeTracksFromPlaylist({
 				token: session?.account.accessToken,
-				playlist,
+				playlistId: playlist.id,
 				trackUris,
 			}),
 		onSuccess: () => {

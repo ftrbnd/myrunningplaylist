@@ -91,24 +91,19 @@ export async function reorderPlaylist({
 	return res;
 }
 
-// TODO: fix 502 bad gateway response?
 export async function removeTracksFromPlaylist({
 	token,
-	playlist,
+	playlistId,
 	trackUris,
 }: {
 	token?: string | null;
-	playlist: Playlist<Track>;
+	playlistId: string;
 	trackUris: string[];
 }) {
 	if (!token) throw new Error('Access token is required');
 
-	const tracks = trackUris.map((uri) => {
-		return { uri };
-	});
-
 	const res = await $spotify<{ snapshot_id: string }>(
-		`/playlists/${playlist.id}/tracks`,
+		`/playlists/${playlistId}/tracks`,
 		{
 			auth: {
 				type: 'Bearer',
@@ -116,8 +111,9 @@ export async function removeTracksFromPlaylist({
 			},
 			method: 'DELETE',
 			body: {
-				tracks,
-				snapshot_id: playlist.snapshot_id,
+				tracks: trackUris.map((uri) => {
+					return { uri };
+				}),
 			},
 		}
 	);
