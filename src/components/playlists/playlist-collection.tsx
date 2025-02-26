@@ -3,7 +3,7 @@
 import PlaylistCard from '@/components/playlists/playlist-card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
-import { usePlaylists } from '@/hooks/usePlaylists';
+import { usePlaylists } from '@/hooks/use-playlists';
 
 export default function PlaylistCollection() {
 	const { playlists } = usePlaylists();

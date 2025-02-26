@@ -5,7 +5,7 @@ import Link, { LinkProps } from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
-import { useMetaColor } from '@/hooks/useMetaColor';
+import { useMetaColor } from '@/hooks/use-meta-color';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 

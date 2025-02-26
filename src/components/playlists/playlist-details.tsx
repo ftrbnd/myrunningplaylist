@@ -4,7 +4,7 @@ import { durationDescription } from '@/lib/utils';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { PlaylistTracks } from '@/components/playlists/playlist-tracks';
 import { RaceForm } from '@/components/playlists/race-form';
-import { usePlaylist } from '@/hooks/usePlaylist';
+import { usePlaylist } from '@/hooks/use-playlist';
 
 export function PlaylistDetails({ id }: { id: string }) {
 	const { original: playlist, duration } = usePlaylist(id);

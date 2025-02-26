@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TrackDetails from '@/components/playlists/track-details';
-import { usePlaylist } from '@/hooks/usePlaylist';
+import { usePlaylist } from '@/hooks/use-playlist';
 import {
 	ContextMenu,
 	ContextMenuContent,
