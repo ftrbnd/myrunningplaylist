@@ -3,10 +3,17 @@
 import { cn, formattedDuration, getDuration } from '@/lib/utils';
 import { Track } from '@spotify/web-api-ts-sdk';
 import { Badge } from '@/components/ui/badge';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TrackDetails from '@/components/playlists/track-details';
 import { usePlaylist } from '@/hooks/usePlaylist';
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuShortcut,
+	ContextMenuTrigger,
+	ContextMenuItem,
+} from '@/components/ui/context-menu';
 
 export function PlaylistTracks({ playlistId }: { playlistId: string }) {
 	const playlist = usePlaylist(playlistId);
@@ -29,6 +36,10 @@ export function PlaylistTracks({ playlistId }: { playlistId: string }) {
 		if (!original) return false;
 
 		return original.uri !== track.uri;
+	};
+
+	const handleClick = (track: Track) => {
+		playlist.removeTracks({ trackUris: [track.uri] });
 	};
 
 	return (
@@ -61,13 +72,25 @@ export function PlaylistTracks({ playlistId }: { playlistId: string }) {
 								<ArrowDown />
 							</Button>
 						</div>
-						<TrackDetails
-							track={track}
-							className={cn(
-								'flex-1',
-								trackIsOutOfOrder(index, track) && 'border-primary'
-							)}
-						/>
+						<ContextMenu>
+							<ContextMenuTrigger className='flex-1 hover:cursor-pointer'>
+								<TrackDetails
+									track={track}
+									className={cn(
+										'flex-1',
+										trackIsOutOfOrder(index, track) && 'border-primary'
+									)}
+								/>
+							</ContextMenuTrigger>
+							<ContextMenuContent>
+								<ContextMenuItem onClick={() => handleClick(track)}>
+									Remove from playlist
+									<ContextMenuShortcut>
+										<Trash2 className='ml-4 size-4' />
+									</ContextMenuShortcut>
+								</ContextMenuItem>
+							</ContextMenuContent>
+						</ContextMenu>
 					</div>
 				</li>
 			))}

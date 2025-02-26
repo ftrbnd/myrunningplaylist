@@ -1,7 +1,11 @@
 import { authClient } from '@/lib/auth-client';
 import { PLAYLISTS_QUERY_KEY } from '@/lib/get-query-client';
 import { getDuration } from '@/lib/utils';
-import { getPlaylist, reorderPlaylist } from '@/services/spotify';
+import {
+	getPlaylist,
+	removeTracksFromPlaylist,
+	reorderPlaylist,
+} from '@/services/spotify';
 import {
 	useMutation,
 	useQueryClient,
@@ -56,7 +60,7 @@ export function usePlaylist(playlistId: string) {
 		});
 	};
 
-	const mutation = useMutation({
+	const reorderMutation = useMutation({
 		mutationFn: async () => {
 			const promises = copy.tracks.items
 				.map(({ track }, newIndex) => {
@@ -87,6 +91,20 @@ export function usePlaylist(playlistId: string) {
 		},
 	});
 
+	const removeTrackMutation = useMutation({
+		mutationFn: ({ trackUris }: { trackUris: string[] }) =>
+			removeTracksFromPlaylist({
+				token: session?.account.accessToken,
+				playlist,
+				trackUris,
+			}),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: [PLAYLISTS_QUERY_KEY, playlist.id],
+			});
+		},
+	});
+
 	return {
 		original: playlist,
 		duration,
@@ -94,6 +112,7 @@ export function usePlaylist(playlistId: string) {
 		copyIsReordered,
 		resetCopy: () => setCopy(playlist),
 		handleReorder,
-		submitReorder: mutation.mutate,
+		submitReorder: reorderMutation.mutate,
+		removeTracks: removeTrackMutation.mutate,
 	};
 }
