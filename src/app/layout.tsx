@@ -7,6 +7,7 @@ import { SiteHeader } from '@/components/layout/site-header';
 import SiteFooter from '@/components/layout/site-footer';
 import { cn } from '@/lib/utils';
 import MyQueryClientProvider from '@/providers/query-client-provider';
+import { PlaylistStoresProvider } from '@/providers/playlist-stores-provider';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -54,28 +55,30 @@ export default function RootLayout({
 					geistMono.variable
 				)}>
 				<MyQueryClientProvider>
-					<ThemeProvider
-						attribute='class'
-						defaultTheme='system'
-						enableSystem
-						disableTransitionOnChange
-						enableColorScheme>
-						<div vaul-drawer-wrapper=''>
-							<div className='relative flex min-h-svh flex-col bg-background'>
-								<div
-									data-wrapper=''
-									className='border-grid flex-col-full'>
-									<SiteHeader />
-									<div className='container-wrapper flex-col-full'>
-										<div className='container py-4 flex-col-full'>
-											<main className='p-4 flex-col-full'>{children}</main>
+					<PlaylistStoresProvider>
+						<ThemeProvider
+							attribute='class'
+							defaultTheme='system'
+							enableSystem
+							disableTransitionOnChange
+							enableColorScheme>
+							<div vaul-drawer-wrapper=''>
+								<div className='relative flex min-h-svh flex-col bg-background'>
+									<div
+										data-wrapper=''
+										className='border-grid flex-col-full'>
+										<SiteHeader />
+										<div className='container-wrapper flex-col-full'>
+											<div className='container py-4 flex-col-full'>
+												<main className='p-4 flex-col-full'>{children}</main>
+											</div>
 										</div>
+										<SiteFooter />
 									</div>
-									<SiteFooter />
 								</div>
 							</div>
-						</div>
-					</ThemeProvider>
+						</ThemeProvider>
+					</PlaylistStoresProvider>
 				</MyQueryClientProvider>
 			</body>
 		</html>

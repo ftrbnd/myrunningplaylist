@@ -1,6 +1,7 @@
 import { authClient } from '@/lib/auth-client';
 import { PLAYLISTS_QUERY_KEY } from '@/lib/get-query-client';
 import { getDuration } from '@/lib/utils';
+import { usePlaylistStore } from '@/providers/playlist-stores';
 import {
 	getPlaylist,
 	removeTracksFromPlaylist,
@@ -11,7 +12,6 @@ import {
 	useQueryClient,
 	useSuspenseQuery,
 } from '@tanstack/react-query';
-import { useState } from 'react';
 
 const { useSession } = authClient;
 
@@ -21,6 +21,7 @@ export function usePlaylist(playlistId: string) {
 
 	const {
 		data: { playlist },
+		refetch,
 	} = useSuspenseQuery({
 		queryKey: [PLAYLISTS_QUERY_KEY, playlistId],
 		queryFn: () =>
@@ -30,7 +31,17 @@ export function usePlaylist(playlistId: string) {
 			}),
 	});
 
-	const [copy, setCopy] = useState(playlist);
+	const {
+		playlist: copy,
+		reorderTrack,
+		reset,
+	} = usePlaylistStore(JSON.parse(JSON.stringify(playlist)), (state) => state);
+
+	const resetCopy = async () => {
+		const { data } = await refetch();
+		if (data?.playlist) reset(data?.playlist);
+	};
+
 	const copyIsReordered = copy.tracks.items.some(
 		({ track }, i) => playlist.tracks.items.at(i)?.track.id !== track.id
 	);
@@ -40,25 +51,6 @@ export function usePlaylist(playlistId: string) {
 		0
 	);
 	const duration = getDuration(runtimeMs);
-
-	const handleReorder = (index: number, direction: 'up' | 'down') => {
-		setCopy((prev) => {
-			const [track] = prev.tracks.items.splice(index, 1);
-			prev.tracks.items.splice(
-				direction === 'up' ? index - 1 : index + 1,
-				0,
-				track
-			);
-
-			return {
-				...prev,
-				tracks: {
-					...prev.tracks,
-					items: [...prev.tracks.items],
-				},
-			};
-		});
-	};
 
 	const reorderMutation = useMutation({
 		mutationFn: async () => {
@@ -106,13 +98,16 @@ export function usePlaylist(playlistId: string) {
 	});
 
 	return {
+		// tanstack-query
 		original: playlist,
-		duration,
-		copy,
-		copyIsReordered,
-		resetCopy: () => setCopy(playlist),
-		handleReorder,
 		submitReorder: reorderMutation.mutate,
 		removeTracks: removeTrackMutation.mutate,
+		// zustand
+		copy,
+		resetCopy,
+		handleReorder: reorderTrack,
+		// derived state
+		duration,
+		copyIsReordered,
 	};
 }
