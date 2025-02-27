@@ -7,6 +7,7 @@ import { RaceForm } from '@/components/playlists/race-form';
 import { usePlaylist } from '@/hooks/use-playlist';
 import { MotionEditingToast } from '@/components/playlists/editing-toast';
 import { AnimatePresence } from 'motion/react';
+import { RaceMarkers } from './race-markers';
 
 interface Props {
 	id: string;
@@ -44,7 +45,13 @@ export function PlaylistDetails({ id }: Props) {
 						<RaceForm />
 					</CardContent>
 				</Card>
-				<PlaylistTracks playlistId={playlist.original.id} />
+				<div className='grid grid-flow-col md:gap-1'>
+					<PlaylistTracks playlistId={playlist.original.id} />
+					<RaceMarkers
+						playlistId={playlist.original.id}
+						className='place-self-end'
+					/>
+				</div>
 				<AnimatePresence initial={false}>
 					{playlist.copyIsReordered && (
 						<MotionEditingToast

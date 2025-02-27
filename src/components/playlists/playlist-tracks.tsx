@@ -21,8 +21,13 @@ import {
 	useMotionValue,
 } from 'motion/react';
 import { useRaisedShadow } from '@/hooks/use-raised-shadow';
+import { ComponentProps } from 'react';
 
-export function PlaylistTracks({ playlistId }: { playlistId: string }) {
+interface Props extends ComponentProps<'ul'> {
+	playlistId: string;
+}
+
+export function PlaylistTracks({ playlistId, ...props }: Props) {
 	const playlist = usePlaylist(playlistId);
 
 	const handleReorder = (newOrder: PlaylistedTrack<Track>[]) => {
@@ -40,7 +45,10 @@ export function PlaylistTracks({ playlistId }: { playlistId: string }) {
 			<Reorder.Group
 				values={playlist.copy.tracks.items}
 				onReorder={handleReorder}
-				className='flex flex-col gap-2 md:col-start-1 md:row-start-1'>
+				className={cn(
+					'flex flex-col gap-2 md:col-start-1 md:row-start-1',
+					props.className
+				)}>
 				{playlist.copy.tracks.items.map((item, index) => (
 					<ReorderableTrackItem
 						key={`${item.track.id}-${index}`}
