@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Icons } from '@/components/layout/icons';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 interface Props {
 	playlist: Playlist<TrackItem>;
@@ -31,6 +32,7 @@ export default function PlaylistCard({ playlist }: Props) {
 						'w-16 h-16 md:h-32 md:w-32 rounded-md',
 						hover && 'opacity-50'
 					)}
+					priority
 					src={image.url}
 					height={image.height ?? 64}
 					width={image.width ?? 64}
@@ -40,9 +42,12 @@ export default function PlaylistCard({ playlist }: Props) {
 				<Icons.localFile className='md:h-32 md:w-32' />
 			)}
 			<div className='flex-1 space-y-1'>
-				<p className={cn('font-semibold leading-none', hover && 'underline')}>
+				<Link
+					href={`/${playlist.id}`}
+					prefetch
+					className={cn('font-semibold leading-none', hover && 'underline')}>
 					{playlist.name}
-				</p>
+				</Link>
 				<p className='text-sm text-muted-foreground'>
 					{playlist.tracks.total} tracks
 				</p>
