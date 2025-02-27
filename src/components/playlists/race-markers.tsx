@@ -1,3 +1,6 @@
+'use client';
+
+import { usePlaylist } from '@/hooks/use-playlist';
 import { cn } from '@/lib/utils';
 import { ComponentProps } from 'react';
 
@@ -6,6 +9,13 @@ interface Props extends ComponentProps<'div'> {
 }
 
 export function RaceMarkers({ playlistId, ...props }: Props) {
+	const playlist = usePlaylist(playlistId);
+	// TODO: add race to playlist store state, and setRace action to be able to use them here
+
+	// TODO: mile markers:, show X amount of markers (13 for half-marathon, 10 for 10k)
+
+	// TODO: how to handle playlists that are loner than the race?
+
 	return (
 		<div
 			className={cn(

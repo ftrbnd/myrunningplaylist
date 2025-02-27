@@ -1,6 +1,6 @@
 'use client';
 
-import { raceDistances } from '@/lib/utils';
+import { metricRaces, imperialRaces } from '@/lib/utils';
 import {
 	Select,
 	SelectTrigger,
@@ -25,9 +25,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+const metric = metricRaces.map(({ name }) => name);
+const imperial = imperialRaces.map(({ name }) => name);
+
 const formSchema = z.object({
-	distance: z.enum(raceDistances.metric).or(z.enum(raceDistances.imperial)),
-	hours: z.coerce.number().min(0).max(9).optional(),
+	distance: z
+		.enum([metric[0], ...metric.slice(0)])
+		.or(z.enum([imperial[0], ...imperial.slice(0)])),
+	hours: z.coerce.number().min(0).max(9).default(0),
 	minutes: z.coerce.number().min(0).max(59),
 	seconds: z.coerce.number().min(0).max(59),
 });
@@ -70,21 +75,21 @@ export function RaceForm({
 								<SelectContent>
 									<SelectGroup>
 										<SelectLabel>Metric</SelectLabel>
-										{raceDistances.metric.map((distance) => (
+										{metricRaces.map(({ name }) => (
 											<SelectItem
-												key={distance}
-												value={distance}>
-												{distance}
+												key={name}
+												value={name}>
+												{name}
 											</SelectItem>
 										))}
 									</SelectGroup>
 									<SelectGroup>
 										<SelectLabel>Imperial</SelectLabel>
-										{raceDistances.imperial.map((distance) => (
+										{imperialRaces.map(({ name }) => (
 											<SelectItem
-												key={distance}
-												value={distance}>
-												{distance}
+												key={name}
+												value={name}>
+												{name}
 											</SelectItem>
 										))}
 									</SelectGroup>
