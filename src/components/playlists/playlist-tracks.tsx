@@ -69,6 +69,7 @@ interface TrackItemProps {
 	index: number;
 	playlistId: string;
 }
+
 function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 	const playlist = usePlaylist(playlistId);
 

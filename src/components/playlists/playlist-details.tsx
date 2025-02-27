@@ -5,28 +5,35 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { PlaylistTracks } from '@/components/playlists/playlist-tracks';
 import { RaceForm } from '@/components/playlists/race-form';
 import { usePlaylist } from '@/hooks/use-playlist';
+import { EditingToast } from './editing-toast';
 
-export function PlaylistDetails({ id }: { id: string }) {
-	const { original: playlist, duration } = usePlaylist(id);
+interface Props {
+	id: string;
+}
+
+export function PlaylistDetails({ id }: Props) {
+	const playlist = usePlaylist(id);
 
 	return (
-		<div>
-			<div className='flex justify-between items-center'>
+		<>
+			<div className='flex justify-between items-center w-full'>
 				<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4'>
-					{playlist.name}
+					{playlist.original.name}
 				</h1>
 
 				<p className='text-muted-foreground'>
 					Total runtime:{' '}
 					{durationDescription(
-						duration.seconds,
-						duration.minutes,
-						duration.hours
+						playlist.duration.seconds,
+						playlist.duration.minutes,
+						playlist.duration.hours
 					)}
 				</p>
 			</div>
 			<div className='flex flex-col gap-2 md:grid md:grid-cols-2'>
-				<Card className=' h-min w-full md:w-min md:col-start-2 md:row-start-1 md:justify-self-end'>
+				<Card
+					className='h-min w-full md:w-min md:col-start-2 
+				md:row-start-1 md:justify-self-end'>
 					<CardHeader>
 						<CardTitle className='scroll-m-20 text-xl font-semibold tracking-tight'>
 							Select your race
@@ -36,8 +43,9 @@ export function PlaylistDetails({ id }: { id: string }) {
 						<RaceForm />
 					</CardContent>
 				</Card>
-				<PlaylistTracks playlistId={playlist.id} />
+				<PlaylistTracks playlistId={playlist.original.id} />
+				{playlist.copyIsReordered && <EditingToast playlistId={id} />}
 			</div>
-		</div>
+		</>
 	);
 }
