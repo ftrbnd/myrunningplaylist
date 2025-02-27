@@ -2,12 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const { useSession, signOut } = authClient;
 
-export default function Logout() {
+export default function Logout(props: ButtonProps) {
 	const router = useRouter();
 	const { data } = useSession();
 
@@ -26,7 +26,8 @@ export default function Logout() {
 	return (
 		<Button
 			onClick={handleLogout}
-			variant='outline'>
+			variant='outline'
+			{...props}>
 			<Avatar className='h-6 w-6'>
 				{data?.user.image ? (
 					<AvatarImage

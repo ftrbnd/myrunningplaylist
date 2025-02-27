@@ -23,7 +23,7 @@ export async function SiteHeader() {
 					<MobileNav />
 					<div className='flex flex-1 items-center gap-2 justify-end'>
 						<nav className='flex items-center gap-0.5'>
-							{session?.session && <Logout />}
+							{session?.session && <Logout className='hidden md:inline-flex' />}
 							<Button
 								variant='ghost'
 								size='icon'

@@ -1,13 +1,24 @@
 'use client';
 
-import { useState, useCallback, Fragment, ReactNode } from 'react';
+import { useState, useCallback, ReactNode } from 'react';
 import Link, { LinkProps } from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 import { useMetaColor } from '@/hooks/use-meta-color';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import {
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerDescription,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
+import { siteConfig } from '@/config/site';
+import Logout from '@/components/auth/logout';
 
 export function MobileNav() {
 	const [open, setOpen] = useState(false);
@@ -46,25 +57,25 @@ export function MobileNav() {
 				</Button>
 			</DrawerTrigger>
 			<DrawerContent className='max-h-[60svh] p-0'>
+				<DrawerHeader>
+					<DrawerTitle>{siteConfig.name}</DrawerTitle>
+					<DrawerDescription>Pages</DrawerDescription>
+				</DrawerHeader>
 				<div className='overflow-auto p-6'>
 					<div className='flex flex-col space-y-2'>
-						<div className='flex flex-col space-y-3 pt-6'>
-							<h4 className='font-medium'>Title</h4>
-
-							<Fragment>
-								<MobileLink
-									href={'/'}
-									onOpenChange={setOpen}
-									className='text-muted-foreground'>
-									Title
-									<span className='ml-2 rounded-md bg-[#adfa1d] px-1.5 py-0.5 text-xs leading-none text-[#000000] no-underline group-hover:no-underline'>
-										Label
-									</span>
-								</MobileLink>
-							</Fragment>
-						</div>
+						<MobileLink
+							href={'/'}
+							onOpenChange={setOpen}>
+							Home
+						</MobileLink>
 					</div>
 				</div>
+				<DrawerFooter>
+					<Logout variant='secondary' />
+					<DrawerClose asChild>
+						<Button variant='outline'>Cancel</Button>
+					</DrawerClose>
+				</DrawerFooter>
 			</DrawerContent>
 		</Drawer>
 	);
