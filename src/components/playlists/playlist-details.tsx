@@ -5,7 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { PlaylistTracks } from '@/components/playlists/playlist-tracks';
 import { RaceForm } from '@/components/playlists/race-form';
 import { usePlaylist } from '@/hooks/use-playlist';
-import { EditingToast } from './editing-toast';
+import { MotionEditingToast } from '@/components/playlists/editing-toast';
+import { AnimatePresence } from 'motion/react';
 
 interface Props {
 	id: string;
@@ -44,7 +45,19 @@ export function PlaylistDetails({ id }: Props) {
 					</CardContent>
 				</Card>
 				<PlaylistTracks playlistId={playlist.original.id} />
-				{playlist.copyIsReordered && <EditingToast playlistId={id} />}
+				<AnimatePresence initial={false}>
+					{playlist.copyIsReordered && (
+						<MotionEditingToast
+							initial={{ opacity: 0, scale: 0 }}
+							animate={{ opacity: 1, scale: 1 }}
+							exit={{ opacity: 0, scale: 0 }}
+							transition={{
+								delay: 0.1,
+							}}
+							playlistId={id}
+						/>
+					)}
+				</AnimatePresence>
 			</div>
 		</>
 	);

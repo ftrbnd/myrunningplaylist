@@ -1,17 +1,21 @@
 import { Button } from '@/components/ui/button';
 import { usePlaylist } from '@/hooks/use-playlist';
 import { cn } from '@/lib/utils';
+import { motion } from 'motion/react';
 import { ComponentProps } from 'react';
 
 interface Props extends ComponentProps<'div'> {
 	playlistId: string;
 }
 
-export function EditingToast({ playlistId, ...props }: Props) {
+export const MotionEditingToast = motion.create(EditingToast);
+
+function EditingToast({ playlistId, ...props }: Props) {
 	const playlist = usePlaylist(playlistId);
 
 	return (
 		<div
+			ref={props.ref}
 			className={cn(
 				'flex gap-4 items-center justify-between',
 				'max-w-[400px] bg-card rounded-md shadow-lg ring-1 ring-black/5 p-4',
