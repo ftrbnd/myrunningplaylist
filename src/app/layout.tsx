@@ -70,7 +70,7 @@ export default function RootLayout({
 										<SiteHeader />
 										<div className='container-wrapper flex-col-full'>
 											<div className='container py-4 flex-col-full'>
-												<main className='p-4 flex-col-full'>{children}</main>
+												<main className='md:p-4 flex-col-full'>{children}</main>
 											</div>
 										</div>
 										<SiteFooter />

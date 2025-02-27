@@ -47,7 +47,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 			<TooltipProvider>
 				<div className='flex-1 space-y-1'>
 					<Tooltip>
-						<TooltipTrigger className='font-medium leading-none line-clamp-1'>
+						<TooltipTrigger className='font-medium leading-none line-clamp-1 max-w-16 md:max-w-none'>
 							{track.name}
 						</TooltipTrigger>
 						<TooltipContent>
@@ -55,7 +55,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 						</TooltipContent>
 					</Tooltip>
 					<Tooltip>
-						<TooltipTrigger className='text-sm text-muted-foreground line-clamp-1'>
+						<TooltipTrigger className='text-sm text-muted-foreground line-clamp-1 max-w-16 md:max-w-none'>
 							{artists}
 						</TooltipTrigger>
 						<TooltipContent>
@@ -64,7 +64,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 					</Tooltip>
 				</div>
 				<Tooltip>
-					<TooltipTrigger className='text-muted-foreground line-clamp-1'>
+					<TooltipTrigger className='text-muted-foreground line-clamp-1 max-w-8 md:max-w-none'>
 						{track.album.name}
 					</TooltipTrigger>
 					<TooltipContent>
@@ -75,6 +75,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 				<Grip
 					className='self-center min-h-5 max-h-5 min-w-5 max-w-5 hover:cursor-grab hover:opacity-80'
 					onPointerDown={(event) => dragControls.start(event)}
+					style={{ touchAction: 'none' }}
 				/>
 			</TooltipProvider>
 		</div>
