@@ -24,12 +24,7 @@ export function PlaylistDetails({ id }: Props) {
 				</h1>
 
 				<p className='text-muted-foreground'>
-					Total runtime:{' '}
-					{durationDescription(
-						playlist.duration.seconds,
-						playlist.duration.minutes,
-						playlist.duration.hours
-					)}
+					Total runtime: {durationDescription(playlist.duration)}
 				</p>
 			</div>
 			<div className='flex flex-col gap-2 md:grid md:grid-cols-2'>
@@ -42,7 +37,7 @@ export function PlaylistDetails({ id }: Props) {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<RaceForm />
+						<RaceForm playlistId={id} />
 					</CardContent>
 				</Card>
 				<div className='grid grid-flow-col md:gap-1'>

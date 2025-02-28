@@ -24,9 +24,11 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { usePlaylist } from '@/hooks/use-playlist';
 
 const metric = metricRaces.map(({ name }) => name);
 const imperial = imperialRaces.map(({ name }) => name);
+const races = [...metricRaces, ...imperialRaces];
 
 const formSchema = z.object({
 	distance: z
@@ -37,19 +39,34 @@ const formSchema = z.object({
 	seconds: z.coerce.number().min(0).max(59),
 });
 
-export function RaceForm({
-	disabledWhileLoading,
-}: {
+interface RaceFormProps {
+	playlistId: string;
 	disabledWhileLoading?: boolean;
-}) {
+}
+
+export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
+	const playlist = usePlaylist(playlistId);
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
 		console.log(values);
+
+		const race = races.find((r) => r.name === values.distance);
+		if (!race)
+			throw new Error(`Race with name '${values.distance}' was not found`);
+
+		playlist.setRace({
+			name: values.distance,
+			value: race.value,
+		});
+		playlist.setGoalTime({
+			hours: values.hours,
+			minutes: values.minutes,
+			seconds: values.seconds,
+		});
 	}
 
 	return (

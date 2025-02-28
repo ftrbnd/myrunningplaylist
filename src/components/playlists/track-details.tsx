@@ -71,7 +71,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 						<p>{track.album.name}</p>
 					</TooltipContent>
 				</Tooltip>
-				<p className='font-medium'>{formattedDuration(seconds, minutes)}</p>
+				<p className='font-medium'>{formattedDuration({ seconds, minutes })}</p>
 				<Grip
 					className='self-center min-h-5 max-h-5 min-w-5 max-w-5 hover:cursor-grab hover:opacity-80'
 					onPointerDown={(event) => dragControls.start(event)}

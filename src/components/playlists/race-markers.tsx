@@ -10,7 +10,7 @@ interface Props extends ComponentProps<'div'> {
 
 export function RaceMarkers({ playlistId, ...props }: Props) {
 	const playlist = usePlaylist(playlistId);
-	// TODO: add race to playlist store state, and setRace action to be able to use them here
+	console.log(playlist.race, playlist.goalTime);
 
 	// TODO: mile markers:, show X amount of markers (13 for half-marathon, 10 for 10k)
 

@@ -59,12 +59,7 @@ export function PlaylistTracks({ playlistId, ...props }: Props) {
 				))}
 				<li className='flex gap-1'>
 					<Badge variant='destructive'>
-						Finish:{' '}
-						{formattedDuration(
-							playlist.duration.seconds,
-							playlist.duration.minutes,
-							playlist.duration.hours
-						)}
+						Finish: {formattedDuration(playlist.duration)}
 					</Badge>
 				</li>
 			</Reorder.Group>
@@ -94,8 +89,8 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 			0
 		);
 
-		const { hours, minutes, seconds } = getDuration(currentMs);
-		return formattedDuration(seconds, minutes, hours);
+		const duration = getDuration(currentMs);
+		return formattedDuration(duration);
 	};
 
 	const trackIsOutOfOrder = (index: number, track: Track) => {

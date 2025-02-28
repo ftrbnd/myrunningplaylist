@@ -2,14 +2,19 @@ import { Playlist, Track } from '@spotify/web-api-ts-sdk';
 import { useCallback, useContext } from 'react';
 import { createStore, useStore } from 'zustand';
 import { PlaylistStoresContext } from './playlist-stores-provider';
+import { Duration, Race } from '@/lib/utils';
 
 export type PlaylistState = {
 	playlist: Playlist<Track>;
+	race?: Race;
+	goalTime?: Duration;
 };
 
 export type PlaylistActions = {
 	reorderTrack: (index: number, direction: 'up' | 'down') => void;
 	setPlaylist: (newPlaylist: Playlist<Track>) => void;
+	setRace: (newRace: Race) => void;
+	setGoalTime: (newGoalTime: Duration) => void;
 };
 
 export type PlaylistStore = PlaylistState & PlaylistActions;
@@ -42,6 +47,20 @@ export const createPlaylistStore = (initState: PlaylistState) => {
 				return {
 					...state,
 					playlist: newPlaylist,
+				};
+			}),
+		setRace: (newRace: Race) =>
+			set((state) => {
+				return {
+					...state,
+					race: newRace,
+				};
+			}),
+		setGoalTime: (newGoalTime: Duration) =>
+			set((state) => {
+				return {
+					...state,
+					goalTime: newGoalTime,
 				};
 			}),
 	}));

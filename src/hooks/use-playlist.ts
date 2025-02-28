@@ -35,6 +35,10 @@ export function usePlaylist(playlistId: string) {
 		playlist: copy,
 		reorderTrack,
 		setPlaylist: setCopy,
+		race,
+		setRace,
+		goalTime,
+		setGoalTime,
 	} = usePlaylistStore(JSON.parse(JSON.stringify(playlist)), (state) => state);
 
 	const resetCopy = async () => {
@@ -107,6 +111,10 @@ export function usePlaylist(playlistId: string) {
 		setCopy,
 		resetCopy,
 		handleReorder: reorderTrack,
+		race,
+		setRace,
+		goalTime,
+		setGoalTime,
 		// derived state
 		duration,
 		copyIsReordered,
