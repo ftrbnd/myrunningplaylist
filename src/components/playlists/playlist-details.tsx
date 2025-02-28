@@ -1,13 +1,13 @@
 'use client';
 
-import { durationDescription } from '@/lib/utils';
+import { durationDescription } from '@/lib/duration';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { PlaylistTracks } from '@/components/playlists/playlist-tracks';
 import { RaceForm } from '@/components/playlists/race-form';
 import { usePlaylist } from '@/hooks/use-playlist';
 import { MotionEditingToast } from '@/components/playlists/editing-toast';
 import { AnimatePresence } from 'motion/react';
-import { RaceMarkers } from './race-markers';
+import { RaceMarkers } from '@/components/playlists/race-markers';
 
 interface Props {
 	id: string;

@@ -4,7 +4,7 @@ import { useState, useCallback, ReactNode } from 'react';
 import Link, { LinkProps } from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { useMetaColor } from '@/hooks/use-meta-color';
 import {
 	Drawer,

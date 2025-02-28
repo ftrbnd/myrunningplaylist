@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth';
 import { getPlaylist } from '@/services/spotify';
 import { headers } from 'next/headers';
-import { getQueryClient } from '@/lib/get-query-client';
+import { getQueryClient } from '@/providers/get-query-client';
 import { PlaylistDetails } from '@/components/playlists/playlist-details';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 

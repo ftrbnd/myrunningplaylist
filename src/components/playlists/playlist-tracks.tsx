@@ -1,6 +1,6 @@
 'use client';
 
-import { cn, formattedDuration, getDuration } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { PlaylistedTrack, Track } from '@spotify/web-api-ts-sdk';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
@@ -22,6 +22,7 @@ import {
 } from 'motion/react';
 import { useRaisedShadow } from '@/hooks/use-raised-shadow';
 import { ComponentProps } from 'react';
+import { formattedDuration, getDuration } from '@/lib/duration';
 
 interface Props extends ComponentProps<'ul'> {
 	playlistId: string;

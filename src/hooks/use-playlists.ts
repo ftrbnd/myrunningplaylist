@@ -1,5 +1,5 @@
 import { authClient } from '@/lib/auth-client';
-import { PLAYLISTS_QUERY_KEY } from '@/lib/get-query-client';
+import { PLAYLISTS_QUERY_KEY } from '@/providers/get-query-client';
 import { getPlaylists } from '@/services/spotify';
 import { useSuspenseQuery } from '@tanstack/react-query';
 

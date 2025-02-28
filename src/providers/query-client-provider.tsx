@@ -1,6 +1,6 @@
 'use client';
 
-import { getQueryClient } from '@/lib/get-query-client';
+import { getQueryClient } from '@/providers/get-query-client';
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
 import { QueryClientProvider } from '@tanstack/react-query';
 

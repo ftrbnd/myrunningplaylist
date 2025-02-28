@@ -1,7 +1,7 @@
 import { Track } from '@spotify/web-api-ts-sdk';
 import Image from 'next/image';
 import { Icons } from '@/components/layout/icons';
-import { cn, formattedDuration, getDuration } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import {
 	Tooltip,
 	TooltipContent,
@@ -11,6 +11,7 @@ import {
 import { ComponentProps } from 'react';
 import { DragControls, motion } from 'motion/react';
 import { Grip } from 'lucide-react';
+import { formattedDuration, getDuration } from '@/lib/duration';
 
 interface Props extends ComponentProps<'div'> {
 	track: Track;

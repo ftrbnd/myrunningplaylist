@@ -1,6 +1,6 @@
 'use client';
 
-import { metricRaces, imperialRaces } from '@/lib/utils';
+import { metricRaces, imperialRaces } from '@/lib/race';
 import {
 	Select,
 	SelectTrigger,

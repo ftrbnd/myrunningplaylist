@@ -1,8 +1,9 @@
 import { Playlist, Track } from '@spotify/web-api-ts-sdk';
 import { useCallback, useContext } from 'react';
 import { createStore, useStore } from 'zustand';
-import { PlaylistStoresContext } from './playlist-stores-provider';
-import { Duration, Race } from '@/lib/utils';
+import { PlaylistStoresContext } from '@/providers/playlist-stores-provider';
+import { Duration } from '@/lib/duration';
+import { Race } from '@/lib/race';
 
 export type PlaylistState = {
 	playlist: Playlist<Track>;

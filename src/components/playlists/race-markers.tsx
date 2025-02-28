@@ -1,7 +1,7 @@
 'use client';
 
 import { usePlaylist } from '@/hooks/use-playlist';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { ComponentProps } from 'react';
 
 interface Props extends ComponentProps<'div'> {

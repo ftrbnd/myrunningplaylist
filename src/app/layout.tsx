@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/layout/theme-provider';
 import { META_THEME_COLORS, siteConfig } from '@/config/site';
 import { SiteHeader } from '@/components/layout/site-header';
 import SiteFooter from '@/components/layout/site-footer';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import MyQueryClientProvider from '@/providers/query-client-provider';
 import { PlaylistStoresProvider } from '@/providers/playlist-stores-provider';
 

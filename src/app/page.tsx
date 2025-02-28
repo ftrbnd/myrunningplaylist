@@ -1,7 +1,7 @@
 import Login from '@/components/auth/login';
 import PlaylistCollection from '@/components/playlists/playlist-collection';
 import { auth } from '@/lib/auth';
-import { getQueryClient } from '@/lib/get-query-client';
+import { getQueryClient } from '@/providers/get-query-client';
 import { getPlaylists } from '@/services/spotify';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { headers } from 'next/headers';

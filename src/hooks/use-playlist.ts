@@ -1,6 +1,6 @@
 import { authClient } from '@/lib/auth-client';
-import { PLAYLISTS_QUERY_KEY } from '@/lib/get-query-client';
-import { getDuration } from '@/lib/utils';
+import { PLAYLISTS_QUERY_KEY } from '@/providers/get-query-client';
+import { getDuration } from '@/lib/duration';
 import { usePlaylistStore } from '@/providers/playlist-stores';
 import {
 	getPlaylist,
