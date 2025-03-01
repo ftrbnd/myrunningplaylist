@@ -1,6 +1,11 @@
 'use client';
 
-import { metricRaces, imperialRaces } from '@/lib/race';
+import {
+	distanceSchema,
+	metricRaceNames,
+	imperialRaceNames,
+	allRaces,
+} from '@/lib/race';
 import {
 	Select,
 	SelectTrigger,
@@ -25,19 +30,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { usePlaylist } from '@/hooks/use-playlist';
+import { durationSchema } from '@/lib/duration';
 
-const metric = metricRaces.map(({ name }) => name);
-const imperial = imperialRaces.map(({ name }) => name);
-const races = [...metricRaces, ...imperialRaces];
-
-const formSchema = z.object({
-	distance: z
-		.enum([metric[0], ...metric.slice(0)])
-		.or(z.enum([imperial[0], ...imperial.slice(0)])),
-	hours: z.coerce.number().min(0).max(9).default(0),
-	minutes: z.coerce.number().min(0).max(59),
-	seconds: z.coerce.number().min(0).max(59),
-});
+const formSchema = distanceSchema.and(durationSchema);
 
 interface RaceFormProps {
 	playlistId: string;
@@ -52,15 +47,13 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
-
-		const race = races.find((r) => r.name === values.distance);
-		if (!race)
+		const raceValue = allRaces.get(values.distance);
+		if (!raceValue)
 			throw new Error(`Race with name '${values.distance}' was not found`);
 
 		playlist.setRace({
 			name: values.distance,
-			value: race.value,
+			value: raceValue,
 		});
 		playlist.setGoalTime({
 			hours: values.hours,
@@ -92,7 +85,7 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 								<SelectContent>
 									<SelectGroup>
 										<SelectLabel>Metric</SelectLabel>
-										{metricRaces.map(({ name }) => (
+										{metricRaceNames.map((name) => (
 											<SelectItem
 												key={name}
 												value={name}>
@@ -102,7 +95,7 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 									</SelectGroup>
 									<SelectGroup>
 										<SelectLabel>Imperial</SelectLabel>
-										{imperialRaces.map(({ name }) => (
+										{imperialRaceNames.map((name) => (
 											<SelectItem
 												key={name}
 												value={name}>
@@ -112,7 +105,6 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 									</SelectGroup>
 								</SelectContent>
 							</Select>
-							<FormDescription>How long is your race?</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -127,6 +119,7 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 								<FormLabel>Hours</FormLabel>
 								<FormControl>
 									<Input
+										defaultValue={0}
 										min={0}
 										max={9}
 										type='number'
@@ -146,6 +139,7 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 								<FormLabel>Minutes</FormLabel>
 								<FormControl>
 									<Input
+										defaultValue={0}
 										min={0}
 										max={59}
 										required
@@ -166,6 +160,7 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 								<FormLabel>Seconds</FormLabel>
 								<FormControl>
 									<Input
+										defaultValue={0}
 										min={0}
 										max={59}
 										required
@@ -178,6 +173,7 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 						)}
 					/>
 				</div>
+				<FormDescription>What is your goal time?</FormDescription>
 				<Button
 					disabled={disabledWhileLoading}
 					type='submit'

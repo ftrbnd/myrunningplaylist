@@ -1,8 +1,18 @@
-export type Duration = {
-	hours?: number;
-	minutes?: number;
-	seconds: number;
-};
+import { z } from 'zod';
+
+const defaults = {
+	hours: 0 as const,
+	minutes: 0 as const,
+	seconds: 0,
+} as const;
+
+export const durationSchema = z.object({
+	hours: z.coerce.number().min(0).max(9).default(defaults.hours).optional(),
+	minutes: z.coerce.number().min(0).max(59).default(defaults.minutes),
+	seconds: z.coerce.number().min(0).max(59).default(defaults.seconds),
+});
+
+export type Duration = z.infer<typeof durationSchema>;
 
 export function getDuration(milliseconds: number): Duration {
 	const totalSeconds = Math.floor(milliseconds / 1000);
