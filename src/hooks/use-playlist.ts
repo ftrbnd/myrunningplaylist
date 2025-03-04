@@ -1,6 +1,6 @@
 import { authClient } from '@/lib/auth-client';
 import { PLAYLISTS_QUERY_KEY } from '@/providers/get-query-client';
-import { getDuration } from '@/lib/duration';
+import { durationToSeconds, getDuration } from '@/lib/duration';
 import { usePlaylistStore } from '@/providers/playlist-stores';
 import {
 	getPlaylist,
@@ -55,6 +55,10 @@ export function usePlaylist(playlistId: string) {
 		0
 	);
 	const duration = getDuration(runtimeMs);
+
+	const runtimeSeconds = runtimeMs / 1000;
+	const goalTimeSeconds = durationToSeconds(goalTime);
+	const goalTimeToRuntimeRatio = goalTimeSeconds / runtimeSeconds;
 
 	const reorderMutation = useMutation({
 		mutationFn: async () => {
@@ -117,6 +121,10 @@ export function usePlaylist(playlistId: string) {
 		setGoalTime,
 		// derived state
 		duration,
+		runtimeMs,
+		runtimeSeconds,
+		goalTimeSeconds,
+		goalTimeToRuntimeRatio,
 		copyIsReordered,
 	};
 }
