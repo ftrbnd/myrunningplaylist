@@ -39,6 +39,7 @@ interface RaceFormProps {
 	disabledWhileLoading?: boolean;
 }
 
+// TODO: fix uncontrolled input error
 export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 	const playlist = usePlaylist(playlistId);
 

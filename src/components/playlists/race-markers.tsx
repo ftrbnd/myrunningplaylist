@@ -2,7 +2,14 @@
 
 import { usePlaylist } from '@/hooks/use-playlist';
 import { cn } from '@/lib/cn';
+import { allRaceIntervals } from '@/lib/race';
 import { ComponentProps } from 'react';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface Props extends ComponentProps<'div'> {
 	playlistId: string;
@@ -10,11 +17,10 @@ interface Props extends ComponentProps<'div'> {
 
 export function RaceMarkers({ playlistId, ...props }: Props) {
 	const playlist = usePlaylist(playlistId);
-
-	// TODO: mile markers:, show X amount of markers (13 for half-marathon, 10 for 10k)
-	// TODO: how to handle playlists that are longer than the race?
+	if (!playlist.race) return null;
 
 	const percentage = playlist.goalTimeToRuntimeRatio * 100;
+	const intervals = allRaceIntervals.get(playlist.race.name);
 
 	return (
 		<div
@@ -22,8 +28,41 @@ export function RaceMarkers({ playlistId, ...props }: Props) {
 				height: `${percentage}%`,
 			}}
 			className={cn(
-				`w-2 rounded-sm self-start bg-gradient-to-b from-green-400 dark:from-green-600 via-yellow-400 dark:via-yellow-600 to-red-600 dark:to-red-800`,
+				'w-2 rounded-sm self-start',
+				'flex flex-col justify-evenly',
+				'bg-gradient-to-b from-green-400 dark:from-green-600 via-yellow-400 dark:via-yellow-600 to-red-600 dark:to-red-800',
 				props.className
-			)}></div>
+			)}>
+			{intervals?.slice(0, -1).map((interval, i) => (
+				<Marker
+					key={i}
+					label={interval}
+				/>
+			))}
+		</div>
+	);
+}
+
+interface MarkerProps extends ComponentProps<'div'> {
+	label?: string;
+}
+
+export function Marker({ label, ...props }: MarkerProps) {
+	return (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger className='self-center'>
+					<div
+						{...props}
+						className={cn(
+							'w-4 h-4 self-center rounded-lg z-10 border-2 bg-slate-200 border-slate-800 dark:bg-slate-800 dark:border-slate-200 hover:cursor-pointer',
+							props.className
+						)}></div>
+				</TooltipTrigger>
+				<TooltipContent>
+					<p>{label}</p>
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	);
 }
