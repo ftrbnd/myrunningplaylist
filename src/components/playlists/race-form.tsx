@@ -175,12 +175,22 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 					/>
 				</div>
 				<FormDescription>What is your goal time?</FormDescription>
-				<Button
-					disabled={disabledWhileLoading}
-					type='submit'
-					className='self-center'>
-					Submit
-				</Button>
+				<div className='flex gap-2 justify-between items-center w-full'>
+					<Button
+						disabled={disabledWhileLoading}
+						variant='secondary'
+						onClick={(e) => {
+							e.preventDefault();
+							playlist.setRace(null);
+						}}>
+						Reset
+					</Button>
+					<Button
+						disabled={disabledWhileLoading}
+						type='submit'>
+						Submit
+					</Button>
+				</div>
 			</form>
 		</Form>
 	);

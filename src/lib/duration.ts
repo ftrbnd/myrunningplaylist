@@ -45,7 +45,7 @@ export function durationDescription({ seconds, minutes, hours }: Duration) {
 	return h + m + `${seconds} seconds`;
 }
 
-export function durationToSeconds(duration?: Duration) {
+export function durationToSeconds(duration?: Duration | null) {
 	if (!duration) return 0;
 
 	const hourSeconds = (duration.hours ?? 0) * 3600;

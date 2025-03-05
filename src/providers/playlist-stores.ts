@@ -7,15 +7,15 @@ import { Race } from '@/lib/race';
 
 export type PlaylistState = {
 	playlist: Playlist<Track>;
-	race?: Race;
-	goalTime?: Duration;
+	race?: Race | null;
+	goalTime?: Duration | null;
 };
 
 export type PlaylistActions = {
 	reorderTrack: (index: number, direction: 'up' | 'down') => void;
 	setPlaylist: (newPlaylist: Playlist<Track>) => void;
-	setRace: (newRace: Race) => void;
-	setGoalTime: (newGoalTime: Duration) => void;
+	setRace: (newRace?: Race | null) => void;
+	setGoalTime: (newGoalTime?: Duration | null) => void;
 };
 
 export type PlaylistStore = PlaylistState & PlaylistActions;
@@ -50,14 +50,14 @@ export const createPlaylistStore = (initState: PlaylistState) => {
 					playlist: newPlaylist,
 				};
 			}),
-		setRace: (newRace: Race) =>
+		setRace: (newRace?: Race | null) =>
 			set((state) => {
 				return {
 					...state,
 					race: newRace,
 				};
 			}),
-		setGoalTime: (newGoalTime: Duration) =>
+		setGoalTime: (newGoalTime?: Duration | null) =>
 			set((state) => {
 				return {
 					...state,
