@@ -29,7 +29,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 		<div
 			ref={props.ref}
 			className={cn(
-				'bg-card flex items-center gap-2 rounded-md border p-4 md:max-w-xl hover:bg-secondary/80',
+				'bg-card flex items-center gap-2 rounded-md border p-4 md:max-w-xl hover:bg-secondary/80 shadow-md shadow-muted',
 				props.className
 			)}>
 			<ImageThumbnail
@@ -40,7 +40,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 			<TooltipProvider>
 				<div className='flex-1 space-y-1'>
 					<Tooltip>
-						<TooltipTrigger className='font-medium leading-none line-clamp-1 max-w-16 md:max-w-none'>
+						<TooltipTrigger className='font-medium leading-none line-clamp-1 md:max-w-none'>
 							{track.name}
 						</TooltipTrigger>
 						<TooltipContent>
@@ -48,7 +48,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 						</TooltipContent>
 					</Tooltip>
 					<Tooltip>
-						<TooltipTrigger className='text-sm text-muted-foreground line-clamp-1 max-w-16 md:max-w-none'>
+						<TooltipTrigger className='text-sm text-muted-foreground line-clamp-1 md:max-w-none'>
 							{artists}
 						</TooltipTrigger>
 						<TooltipContent>

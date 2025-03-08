@@ -39,12 +39,17 @@ interface RaceFormProps {
 	disabledWhileLoading?: boolean;
 }
 
-// TODO: fix uncontrolled input error
 export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 	const playlist = usePlaylist(playlistId);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
+		defaultValues: {
+			distance: 'Marathon',
+			hours: 0,
+			minutes: 0,
+			seconds: 0,
+		},
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
@@ -110,83 +115,83 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 						</FormItem>
 					)}
 				/>
-				<div className='flex justify-start gap-1'>
-					<FormField
-						disabled={disabledWhileLoading}
-						control={form.control}
-						name='hours'
-						render={({ field }) => (
-							<FormItem className='w-16 md:w-24 max-w-24'>
-								<FormLabel>Hours</FormLabel>
-								<FormControl>
-									<Input
-										defaultValue={0}
-										min={0}
-										max={9}
-										type='number'
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						disabled={disabledWhileLoading}
-						control={form.control}
-						name='minutes'
-						render={({ field }) => (
-							<FormItem className='w-16 md:w-24 max-w-24'>
-								<FormLabel>Minutes</FormLabel>
-								<FormControl>
-									<Input
-										defaultValue={0}
-										min={0}
-										max={59}
-										required
-										type='number'
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						disabled={disabledWhileLoading}
-						control={form.control}
-						name='seconds'
-						render={({ field }) => (
-							<FormItem className='w-16 md:w-24 max-w-24'>
-								<FormLabel>Seconds</FormLabel>
-								<FormControl>
-									<Input
-										defaultValue={0}
-										min={0}
-										max={59}
-										required
-										type='number'
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+				<div className='flex flex-col items-center gap-1'>
+					<div className='flex justify-start gap-1'>
+						<FormField
+							disabled={disabledWhileLoading}
+							control={form.control}
+							name='hours'
+							render={({ field }) => (
+								<FormItem className='w-16 md:w-24 max-w-24'>
+									<FormLabel>Hours</FormLabel>
+									<FormControl>
+										<Input
+											min={0}
+											max={9}
+											type='number'
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							disabled={disabledWhileLoading}
+							control={form.control}
+							name='minutes'
+							render={({ field }) => (
+								<FormItem className='w-16 md:w-24 max-w-24'>
+									<FormLabel>Minutes</FormLabel>
+									<FormControl>
+										<Input
+											min={0}
+											max={59}
+											required
+											type='number'
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							disabled={disabledWhileLoading}
+							control={form.control}
+							name='seconds'
+							render={({ field }) => (
+								<FormItem className='w-16 md:w-24 max-w-24'>
+									<FormLabel>Seconds</FormLabel>
+									<FormControl>
+										<Input
+											min={0}
+											max={59}
+											required
+											type='number'
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<FormDescription>What is your goal time?</FormDescription>
 				</div>
-				<FormDescription>What is your goal time?</FormDescription>
 				<div className='flex gap-2 justify-between items-center w-full'>
 					<Button
-						disabled={disabledWhileLoading}
+						disabled={disabledWhileLoading || !form.formState.isDirty}
 						variant='secondary'
 						onClick={(e) => {
 							e.preventDefault();
+							form.reset();
 							playlist.setRace(null);
 						}}>
 						Reset
 					</Button>
 					<Button
-						disabled={disabledWhileLoading}
+						disabled={disabledWhileLoading || !form.formState.isDirty}
 						type='submit'>
 						Submit
 					</Button>

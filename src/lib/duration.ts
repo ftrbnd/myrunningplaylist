@@ -1,15 +1,9 @@
 import { z } from 'zod';
 
-const defaults = {
-	hours: 0 as const,
-	minutes: 0 as const,
-	seconds: 0,
-} as const;
-
 export const durationSchema = z.object({
-	hours: z.coerce.number().min(0).max(9).default(defaults.hours).optional(),
-	minutes: z.coerce.number().min(0).max(59).default(defaults.minutes),
-	seconds: z.coerce.number().min(0).max(59).default(defaults.seconds),
+	hours: z.coerce.number().min(0).max(9).optional(),
+	minutes: z.coerce.number().min(0).max(59),
+	seconds: z.coerce.number().min(0).max(59),
 });
 
 export type Duration = z.infer<typeof durationSchema>;

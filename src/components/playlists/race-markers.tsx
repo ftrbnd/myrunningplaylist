@@ -38,7 +38,7 @@ export function RaceMarkers({ playlistId, ...props }: Props) {
 					height: `${percentage}%`,
 				}}
 				className={cn(
-					'w-2 rounded-sm self-start',
+					'w-2 rounded-sm self-start justify-self-center md:justify-self-auto',
 					'flex flex-col justify-evenly',
 					'bg-gradient-to-b from-green-400 dark:from-green-600 via-yellow-400 dark:via-yellow-600 to-red-600 dark:to-red-800',
 					props.className
