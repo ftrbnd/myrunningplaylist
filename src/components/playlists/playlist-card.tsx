@@ -1,57 +1,32 @@
-'use client';
-
 import { Playlist, TrackItem } from '@spotify/web-api-ts-sdk';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { Icons } from '@/components/layout/icons';
-import { useState } from 'react';
-import { cn } from '@/lib/cn';
 import Link from 'next/link';
+import { ImageThumbnail } from './image-thumbnail';
 
 interface Props {
 	playlist: Playlist<TrackItem>;
 }
 
 export default function PlaylistCard({ playlist }: Props) {
-	const [hover, setHover] = useState(false);
-	const router = useRouter();
-
-	const image = playlist.images
-		? playlist.images.find((image) => image !== undefined)
-		: null;
-
 	return (
-		<div
-			onMouseOver={() => setHover(true)}
-			onMouseLeave={() => setHover(false)}
-			className={cn('playlist-card', hover && 'cursor-pointer bg-muted')}
-			onClick={() => router.push(`/${playlist.id}`)}>
-			{image ? (
-				<Image
-					className={cn(
-						'w-16 h-16 md:h-32 md:w-32 rounded-md',
-						hover && 'opacity-50'
-					)}
-					priority
-					src={image.url}
-					height={image.height ?? 64}
-					width={image.width ?? 64}
+		<Link
+			href={`/${playlist.id}`}
+			prefetch>
+			<div className='playlist-card'>
+				<ImageThumbnail
+					images={playlist.images}
+					className='h-24 w-24 md:h-full md:w-full rounded-md'
 					alt={playlist.name}
 				/>
-			) : (
-				<Icons.localFile className='md:h-32 md:w-32' />
-			)}
-			<div className='flex-1 space-y-1'>
-				<Link
-					href={`/${playlist.id}`}
-					prefetch
-					className={cn('font-semibold leading-none', hover && 'underline')}>
-					{playlist.name}
-				</Link>
-				<p className='text-sm text-muted-foreground'>
-					{playlist.tracks.total} tracks
-				</p>
+
+				<div className='flex-1 space-y-1 md:text-center'>
+					<p className='font-semibold leading-none hover:underline text-xl md:text-base'>
+						{playlist.name}
+					</p>
+					<p className='text-muted-foreground text-lg md:text-sm'>
+						{playlist.tracks.total} tracks
+					</p>
+				</div>
 			</div>
-		</div>
+		</Link>
 	);
 }

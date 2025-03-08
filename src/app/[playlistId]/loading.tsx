@@ -5,9 +5,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Loading() {
 	return (
 		<div>
-			<div className='flex justify-between items-center'>
-				<Skeleton className='h-9 lg:h-12 w-64 mb-4' />
-				<div className='text-muted-foreground flex items-center'>
+			<div className='flex flex-col md:flex-row gap-2 justify-between items-center w-full mb-2'>
+				<div className='flex gap-4 items-center w-full md:w-auto'>
+					<Skeleton className='h-24 w-24 rounded-md' />
+					<Skeleton className='h-9 lg:h-12 w-64' />
+				</div>
+				<div className='text-muted-foreground flex items-center self-start md:self-center'>
 					Total runtime:
 					<Skeleton className='ml-2 h-6 w-44' />
 				</div>

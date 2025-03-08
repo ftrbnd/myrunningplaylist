@@ -1,6 +1,4 @@
 import { Track } from '@spotify/web-api-ts-sdk';
-import Image from 'next/image';
-import { Icons } from '@/components/layout/icons';
 import { cn } from '@/lib/cn';
 import {
 	Tooltip,
@@ -12,6 +10,7 @@ import { ComponentProps } from 'react';
 import { DragControls, motion } from 'motion/react';
 import { Grip } from 'lucide-react';
 import { formattedDuration, getDuration } from '@/lib/duration';
+import { ImageThumbnail } from './image-thumbnail';
 
 interface Props extends ComponentProps<'div'> {
 	track: Track;
@@ -24,7 +23,6 @@ export const MotionTrackDetails = motion.create(TrackDetails, {
 
 export function TrackDetails({ track, dragControls, ...props }: Props) {
 	const { minutes, seconds } = getDuration(track.duration_ms);
-	const image = track.album.images.reverse().find((img) => img !== undefined);
 	const artists = track.artists.map((artist) => artist.name).join(', ');
 
 	return (
@@ -34,17 +32,11 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 				'bg-card flex items-center gap-2 rounded-md border p-4 md:max-w-xl hover:bg-secondary/80',
 				props.className
 			)}>
-			{image ? (
-				<Image
-					className='w-16 h-16 rounded-md'
-					src={image.url}
-					height={image.height}
-					width={image.width}
-					alt={track.name}
-				/>
-			) : (
-				<Icons.localFile />
-			)}
+			<ImageThumbnail
+				images={track.album.images}
+				className='w-16 h-16 rounded-md'
+				alt={track.name}
+			/>
 			<TooltipProvider>
 				<div className='flex-1 space-y-1'>
 					<Tooltip>

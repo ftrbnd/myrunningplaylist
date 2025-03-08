@@ -139,7 +139,7 @@
 	}
 
 	.playlist-card {
-		@apply bg-card flex md:flex-col gap-2 items-center space-x-4 h-full rounded-md border p-4 md:max-w-xl;
+		@apply hover:cursor-pointer hover:opacity-80 bg-card flex md:flex-col gap-2 items-center space-x-4 h-full rounded-lg border p-4 md:max-w-xl shadow-md shadow-muted;
 	}
 
 	.card-grid {
@@ -151,13 +151,11 @@
 	}
 }
 
-
-
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+	* {
+		@apply border-border outline-ring/50;
 	}
-  body {
-    @apply bg-background text-foreground;
+	body {
+		@apply bg-background text-foreground;
 	}
 }
