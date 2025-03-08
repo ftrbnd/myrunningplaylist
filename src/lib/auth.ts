@@ -15,6 +15,10 @@ export const auth = betterAuth({
 			verification,
 		},
 	}),
+	session: {
+		expiresIn: 60 * 60 * 1, // seconds * minutes * hours * days
+		updateAge: 60 * 30, // session expiration is updated every 30 minutes
+	},
 	socialProviders: {
 		spotify: {
 			clientId: process.env.SPOTIFY_CLIENT_ID!,
