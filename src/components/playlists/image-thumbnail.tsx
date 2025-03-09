@@ -18,8 +18,8 @@ export function ImageThumbnail({ images, ...props }: Props) {
 			className={props.className}
 			priority
 			src={image.url}
-			height={image.height ?? 64}
-			width={image.width ?? 64}
+			height={image.height ?? 300}
+			width={image.width ?? 300}
 			alt={props.alt ?? 'Thumbnail'}
 		/>
 	) : (
