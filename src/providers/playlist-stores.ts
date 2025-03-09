@@ -1,4 +1,4 @@
-import { Playlist, Track } from '@spotify/web-api-ts-sdk';
+import { Playlist, PlaylistedTrack, Track } from '@spotify/web-api-ts-sdk';
 import { useCallback, useContext } from 'react';
 import { createStore, useStore } from 'zustand';
 import { PlaylistStoresContext } from '@/providers/playlist-stores-provider';
@@ -6,14 +6,14 @@ import { Duration } from '@/lib/duration';
 import { Race } from '@/lib/race';
 
 export type PlaylistState = {
-	playlist: Playlist<Track>;
+	tracks: PlaylistedTrack<Track>[];
 	race?: Race | null;
 	goalTime?: Duration | null;
 };
 
 export type PlaylistActions = {
 	reorderTrack: (index: number, direction: 'up' | 'down') => void;
-	setPlaylist: (newPlaylist: Playlist<Track>) => void;
+	setTracks: (newTracks: PlaylistedTrack<Track>[]) => void;
 	setRace: (newRace?: Race | null) => void;
 	setGoalTime: (newGoalTime?: Duration | null) => void;
 };
@@ -25,8 +25,8 @@ export const createPlaylistStore = (initState: PlaylistState) => {
 		...initState,
 		reorderTrack: (index, direction) =>
 			set((state) => {
-				const [track] = state.playlist.tracks.items.splice(index, 1);
-				state.playlist.tracks.items.splice(
+				const [track] = state.tracks.splice(index, 1);
+				state.tracks.splice(
 					direction === 'up' ? index - 1 : index + 1,
 					0,
 					track
@@ -34,20 +34,14 @@ export const createPlaylistStore = (initState: PlaylistState) => {
 
 				return {
 					...state,
-					playlist: {
-						...state.playlist,
-						tracks: {
-							...state.playlist.tracks,
-							items: [...state.playlist.tracks.items],
-						},
-					},
+					tracks: [...state.tracks],
 				};
 			}),
-		setPlaylist: (newPlaylist: Playlist<Track>) =>
+		setTracks: (newTracks: PlaylistedTrack<Track>[]) =>
 			set((state) => {
 				return {
 					...state,
-					playlist: newPlaylist,
+					tracks: newTracks,
 				};
 			}),
 		setRace: (newRace?: Race | null) =>
@@ -71,17 +65,17 @@ export type PlaylistStoreApi = ReturnType<typeof createPlaylistStore>;
 export type PlaylistStores = Map<string, PlaylistStoreApi>;
 
 export const createPlaylistStoreFactory = (playlistStores: PlaylistStores) => {
-	return (playlist: Playlist<Track>) => {
-		if (!playlistStores.has(playlist.id)) {
+	return (playlistId: string, tracks: PlaylistedTrack<Track>[]) => {
+		if (!playlistStores.has(playlistId)) {
 			playlistStores.set(
-				playlist.id,
+				playlistId,
 				createPlaylistStore({
-					playlist,
+					tracks,
 				})
 			);
 		}
 
-		return playlistStores.get(playlist.id)!;
+		return playlistStores.get(playlistId)!;
 	};
 };
 
@@ -98,7 +92,8 @@ export const usePlaylistStore = <U>(
 	}
 
 	const getOrCreatePlaylistStore = useCallback(
-		(playlist: Playlist<Track>) => createPlaylistStoreFactory(stores)(playlist),
+		(playlist: Playlist<Track>) =>
+			createPlaylistStoreFactory(stores)(playlist.id, playlist.tracks.items),
 		[stores]
 	);
 

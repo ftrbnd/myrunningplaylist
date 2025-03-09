@@ -31,26 +31,16 @@ interface Props extends ComponentProps<'ul'> {
 export function PlaylistTracks({ playlistId, ...props }: Props) {
 	const playlist = usePlaylist(playlistId);
 
-	const handleReorder = (newOrder: PlaylistedTrack<Track>[]) => {
-		playlist.setCopy({
-			...playlist.copy,
-			tracks: {
-				...playlist.copy.tracks,
-				items: newOrder,
-			},
-		});
-	};
-
 	return (
 		<AnimatePresence>
 			<Reorder.Group
-				values={playlist.copy.tracks.items}
-				onReorder={handleReorder}
+				values={playlist.tracks}
+				onReorder={playlist.setTracks}
 				className={cn(
 					'flex flex-col gap-2 md:col-start-1 md:row-start-1',
 					props.className
 				)}>
-				{playlist.copy.tracks.items.map((item, index) => (
+				{playlist.tracks.map((item, index) => (
 					<ReorderableTrackItem
 						key={`${item.track.id}-${index}`}
 						value={item}
@@ -82,9 +72,7 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 	const controls = useDragControls();
 
 	const getStartingTimestamp = (trackIndex: number) => {
-		const tracksBefore = playlist.copy.tracks.items.filter(
-			(_, i) => i < trackIndex
-		);
+		const tracksBefore = playlist.tracks.filter((_, i) => i < trackIndex);
 		const currentMs = tracksBefore.reduce(
 			(prev, cur) => prev + cur.track.duration_ms,
 			0
@@ -133,7 +121,7 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 					</Button>
 					<Button
 						onClick={() => playlist.handleReorder(index, 'down')}
-						disabled={index === playlist.copy.tracks.items.length - 1}
+						disabled={index === playlist.tracks.length - 1}
 						variant='outline'
 						size='icon'>
 						<ArrowDown />

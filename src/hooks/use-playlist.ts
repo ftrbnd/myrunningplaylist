@@ -32,21 +32,21 @@ export function usePlaylist(playlistId: string) {
 	});
 
 	const {
-		playlist: copy,
+		tracks,
 		reorderTrack,
-		setPlaylist: setCopy,
+		setTracks,
 		race,
 		setRace,
 		goalTime,
 		setGoalTime,
 	} = usePlaylistStore(JSON.parse(JSON.stringify(playlist)), (state) => state);
 
-	const resetCopy = async () => {
+	const resetTracks = async () => {
 		const { data } = await refetch();
-		if (data?.playlist) setCopy(data?.playlist);
+		if (data?.playlist) setTracks(data?.playlist.tracks.items);
 	};
 
-	const copyIsReordered = copy.tracks.items.some(
+	const tracksAreReordered = tracks.some(
 		({ track }, i) => playlist.tracks.items.at(i)?.track.id !== track.id
 	);
 
@@ -62,7 +62,7 @@ export function usePlaylist(playlistId: string) {
 
 	const reorderMutation = useMutation({
 		mutationFn: async () => {
-			const promises = copy.tracks.items
+			const promises = tracks
 				.map(({ track }, newIndex) => {
 					const original = playlist.tracks.items;
 					if (original.at(newIndex)?.track.uri === track.uri) return;
@@ -111,9 +111,9 @@ export function usePlaylist(playlistId: string) {
 		submitReorder: reorderMutation.mutate,
 		removeTracks: removeTrackMutation.mutate,
 		// zustand
-		copy,
-		setCopy,
-		resetCopy,
+		tracks,
+		setTracks,
+		resetTracks,
 		handleReorder: reorderTrack,
 		race,
 		setRace,
@@ -125,6 +125,6 @@ export function usePlaylist(playlistId: string) {
 		runtimeSeconds,
 		goalTimeSeconds,
 		goalTimeToRuntimeRatio,
-		copyIsReordered,
+		tracksAreReordered,
 	};
 }

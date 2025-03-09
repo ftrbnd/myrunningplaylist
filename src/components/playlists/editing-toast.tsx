@@ -31,7 +31,7 @@ function EditingToast({ playlistId, ...props }: Props) {
 			<div className='flex gap-2 items-center'>
 				<Button
 					variant='destructive'
-					onClick={playlist.resetCopy}>
+					onClick={playlist.resetTracks}>
 					Reset
 				</Button>
 				<Button onClick={() => playlist.submitReorder()}>Save</Button>
