@@ -40,7 +40,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 			<TooltipProvider>
 				<div className='flex-1 space-y-1'>
 					<Tooltip>
-						<TooltipTrigger className='font-medium leading-none line-clamp-1 md:max-w-none'>
+						<TooltipTrigger className='text-start font-medium leading-none line-clamp-1 md:max-w-none'>
 							{track.name}
 						</TooltipTrigger>
 						<TooltipContent>
@@ -48,7 +48,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 						</TooltipContent>
 					</Tooltip>
 					<Tooltip>
-						<TooltipTrigger className='text-sm text-muted-foreground line-clamp-1 md:max-w-none'>
+						<TooltipTrigger className='text-start text-sm text-muted-foreground line-clamp-1 md:max-w-none'>
 							{artists}
 						</TooltipTrigger>
 						<TooltipContent>
@@ -57,7 +57,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 					</Tooltip>
 				</div>
 				<Tooltip>
-					<TooltipTrigger className='text-muted-foreground line-clamp-1 max-w-8 md:max-w-none'>
+					<TooltipTrigger className='text-muted-foreground line-clamp-1 md:max-w-none'>
 						{track.album.name}
 					</TooltipTrigger>
 					<TooltipContent>

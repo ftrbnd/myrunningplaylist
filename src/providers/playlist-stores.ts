@@ -24,40 +24,20 @@ export const createPlaylistStore = (initState: PlaylistState) => {
 	return createStore<PlaylistStore>()((set) => ({
 		...initState,
 		reorderTrack: (index, direction) =>
-			set((state) => {
-				const [track] = state.tracks.splice(index, 1);
-				state.tracks.splice(
+			set((prev) => {
+				const [track] = prev.tracks.splice(index, 1);
+				prev.tracks.splice(
 					direction === 'up' ? index - 1 : index + 1,
 					0,
 					track
 				);
 
-				return {
-					...state,
-					tracks: [...state.tracks],
-				};
+				return { tracks: prev.tracks };
 			}),
-		setTracks: (newTracks: Track[]) =>
-			set((state) => {
-				return {
-					...state,
-					tracks: newTracks,
-				};
-			}),
-		setRace: (newRace?: Race | null) =>
-			set((state) => {
-				return {
-					...state,
-					race: newRace,
-				};
-			}),
+		setTracks: (newTracks: Track[]) => set(() => ({ tracks: newTracks })),
+		setRace: (newRace?: Race | null) => set(() => ({ race: newRace })),
 		setGoalTime: (newGoalTime?: Duration | null) =>
-			set((state) => {
-				return {
-					...state,
-					goalTime: newGoalTime,
-				};
-			}),
+			set(() => ({ goalTime: newGoalTime })),
 	}));
 };
 

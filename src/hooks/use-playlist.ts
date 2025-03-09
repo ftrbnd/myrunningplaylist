@@ -30,24 +30,15 @@ export function usePlaylist(playlistId: string) {
 				id: playlistId,
 			}),
 	});
-
-	const {
-		tracks,
-		reorderTrack,
-		setTracks,
-		race,
-		setRace,
-		goalTime,
-		setGoalTime,
-	} = usePlaylistStore(JSON.parse(JSON.stringify(playlist)), (state) => state);
+	const store = usePlaylistStore(playlist, (state) => state);
 
 	const resetTracks = async () => {
 		const { data } = await refetch();
 		if (data?.playlist)
-			setTracks(data?.playlist.tracks.items.map((t) => t.track));
+			store.setTracks(data?.playlist.tracks.items.map((t) => t.track));
 	};
 
-	const tracksAreReordered = tracks.some(
+	const tracksAreReordered = store.tracks.some(
 		(track, i) => playlist.tracks.items.at(i)?.track.id !== track.id
 	);
 
@@ -58,12 +49,12 @@ export function usePlaylist(playlistId: string) {
 	const duration = getDuration(runtimeMs);
 
 	const runtimeSeconds = runtimeMs / 1000;
-	const goalTimeSeconds = durationToSeconds(goalTime);
+	const goalTimeSeconds = durationToSeconds(store.goalTime);
 	const goalTimeToRuntimeRatio = goalTimeSeconds / runtimeSeconds;
 
 	const reorderMutation = useMutation({
 		mutationFn: async () => {
-			const promises = tracks
+			const promises = store.tracks
 				.map((track, newIndex) => {
 					const original = playlist.tracks.items;
 					if (original.at(newIndex)?.track.uri === track.uri) return;
@@ -112,14 +103,14 @@ export function usePlaylist(playlistId: string) {
 		submitReorder: reorderMutation.mutate,
 		removeTracks: removeTrackMutation.mutate,
 		// zustand
-		tracks,
-		setTracks,
+		tracks: store.tracks,
+		setTracks: store.setTracks,
 		resetTracks,
-		handleReorder: reorderTrack,
-		race,
-		setRace,
-		goalTime,
-		setGoalTime,
+		handleReorder: store.reorderTrack,
+		race: store.race,
+		setRace: store.setRace,
+		goalTime: store.goalTime,
+		setGoalTime: store.setGoalTime,
 		// derived state
 		duration,
 		runtimeMs,
