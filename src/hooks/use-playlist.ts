@@ -43,11 +43,12 @@ export function usePlaylist(playlistId: string) {
 
 	const resetTracks = async () => {
 		const { data } = await refetch();
-		if (data?.playlist) setTracks(data?.playlist.tracks.items);
+		if (data?.playlist)
+			setTracks(data?.playlist.tracks.items.map((t) => t.track));
 	};
 
 	const tracksAreReordered = tracks.some(
-		({ track }, i) => playlist.tracks.items.at(i)?.track.id !== track.id
+		(track, i) => playlist.tracks.items.at(i)?.track.id !== track.id
 	);
 
 	const runtimeMs = playlist.tracks.items.reduce(
@@ -63,7 +64,7 @@ export function usePlaylist(playlistId: string) {
 	const reorderMutation = useMutation({
 		mutationFn: async () => {
 			const promises = tracks
-				.map(({ track }, newIndex) => {
+				.map((track, newIndex) => {
 					const original = playlist.tracks.items;
 					if (original.at(newIndex)?.track.uri === track.uri) return;
 

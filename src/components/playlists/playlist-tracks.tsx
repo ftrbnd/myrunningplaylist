@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/cn';
-import { PlaylistedTrack, Track } from '@spotify/web-api-ts-sdk';
+import { Track } from '@spotify/web-api-ts-sdk';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -42,7 +42,7 @@ export function PlaylistTracks({ playlistId, ...props }: Props) {
 				)}>
 				{playlist.tracks.map((item, index) => (
 					<ReorderableTrackItem
-						key={`${item.track.id}-${index}`}
+						key={`${item.id}-${index}`}
 						value={item}
 						index={index}
 						playlistId={playlistId}
@@ -59,7 +59,7 @@ export function PlaylistTracks({ playlistId, ...props }: Props) {
 }
 
 interface TrackItemProps {
-	value: PlaylistedTrack<Track>;
+	value: Track;
 	index: number;
 	playlistId: string;
 }
@@ -74,7 +74,7 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 	const getStartingTimestamp = (trackIndex: number) => {
 		const tracksBefore = playlist.tracks.filter((_, i) => i < trackIndex);
 		const currentMs = tracksBefore.reduce(
-			(prev, cur) => prev + cur.track.duration_ms,
+			(prev, cur) => prev + cur.duration_ms,
 			0
 		);
 
@@ -130,16 +130,16 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 				<ContextMenu>
 					<ContextMenuTrigger className='flex-1 hover:cursor-pointer'>
 						<MotionTrackDetails
-							track={value.track}
+							track={value}
 							dragControls={controls}
 							className={cn(
 								'flex-1',
-								trackIsOutOfOrder(index, value.track) && 'border-primary'
+								trackIsOutOfOrder(index, value) && 'border-primary'
 							)}
 						/>
 					</ContextMenuTrigger>
 					<ContextMenuContent>
-						<ContextMenuItem onClick={() => handleClick(value.track)}>
+						<ContextMenuItem onClick={() => handleClick(value)}>
 							Remove from playlist
 							<ContextMenuShortcut>
 								<Trash2 className='ml-4 size-4' />

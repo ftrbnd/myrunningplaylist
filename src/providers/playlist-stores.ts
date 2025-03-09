@@ -1,4 +1,4 @@
-import { Playlist, PlaylistedTrack, Track } from '@spotify/web-api-ts-sdk';
+import { Playlist, Track } from '@spotify/web-api-ts-sdk';
 import { useCallback, useContext } from 'react';
 import { createStore, useStore } from 'zustand';
 import { PlaylistStoresContext } from '@/providers/playlist-stores-provider';
@@ -6,14 +6,14 @@ import { Duration } from '@/lib/duration';
 import { Race } from '@/lib/race';
 
 export type PlaylistState = {
-	tracks: PlaylistedTrack<Track>[];
+	tracks: Track[];
 	race?: Race | null;
 	goalTime?: Duration | null;
 };
 
 export type PlaylistActions = {
 	reorderTrack: (index: number, direction: 'up' | 'down') => void;
-	setTracks: (newTracks: PlaylistedTrack<Track>[]) => void;
+	setTracks: (newTracks: Track[]) => void;
 	setRace: (newRace?: Race | null) => void;
 	setGoalTime: (newGoalTime?: Duration | null) => void;
 };
@@ -37,7 +37,7 @@ export const createPlaylistStore = (initState: PlaylistState) => {
 					tracks: [...state.tracks],
 				};
 			}),
-		setTracks: (newTracks: PlaylistedTrack<Track>[]) =>
+		setTracks: (newTracks: Track[]) =>
 			set((state) => {
 				return {
 					...state,
@@ -65,7 +65,7 @@ export type PlaylistStoreApi = ReturnType<typeof createPlaylistStore>;
 export type PlaylistStores = Map<string, PlaylistStoreApi>;
 
 export const createPlaylistStoreFactory = (playlistStores: PlaylistStores) => {
-	return (playlistId: string, tracks: PlaylistedTrack<Track>[]) => {
+	return (playlistId: string, tracks: Track[]) => {
 		if (!playlistStores.has(playlistId)) {
 			playlistStores.set(
 				playlistId,
@@ -93,7 +93,10 @@ export const usePlaylistStore = <U>(
 
 	const getOrCreatePlaylistStore = useCallback(
 		(playlist: Playlist<Track>) =>
-			createPlaylistStoreFactory(stores)(playlist.id, playlist.tracks.items),
+			createPlaylistStoreFactory(stores)(
+				playlist.id,
+				playlist.tracks.items.map((t) => t.track)
+			),
 		[stores]
 	);
 
