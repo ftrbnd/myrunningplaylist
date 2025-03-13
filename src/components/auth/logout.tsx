@@ -1,27 +1,26 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { authClient } from '@/lib/auth-client';
 import { Button, ButtonProps } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-const { useSession, signOut } = authClient;
+// TODO: replace
+function useSession() {
+	return {
+		user: {
+			image: 'fakeimage',
+			name: 'fakename',
+		},
+	};
+}
 
 export default function Logout(props: ButtonProps) {
-	const router = useRouter();
-	const { data } = useSession();
+	const session = useSession();
 
 	const handleLogout = async () => {
-		await signOut({
-			fetchOptions: {
-				onSuccess: () => {
-					router.push('/login');
-				},
-			},
-		});
+		// await signOut()
 	};
 
-	if (!data?.session) return null;
+	// if (!data?.session) return null;
 
 	return (
 		<Button
@@ -29,13 +28,13 @@ export default function Logout(props: ButtonProps) {
 			variant='outline'
 			{...props}>
 			<Avatar className='h-6 w-6'>
-				{data?.user.image ? (
+				{session?.user.image ? (
 					<AvatarImage
-						src={data.user.image}
-						alt={data.user.name}
+						src={session.user.image}
+						alt={session.user.name}
 					/>
 				) : (
-					<AvatarFallback>{data?.user.name[0].toUpperCase()}</AvatarFallback>
+					<AvatarFallback>{session?.user.name[0].toUpperCase()}</AvatarFallback>
 				)}
 			</Avatar>
 			Log out

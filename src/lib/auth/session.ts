@@ -1,5 +1,5 @@
-import { db } from '@/db';
-import { User, Session, sessions, users } from '@/db/schema';
+import { db } from '@/lib/db';
+import { User, Session, sessions, users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import {
 	encodeBase32LowerCaseNoPadding,

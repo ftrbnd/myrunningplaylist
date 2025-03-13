@@ -1,16 +1,18 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { signIn } from '@/lib/auth-client';
 import { Icons } from '@/components/layout/icons';
+import Link from 'next/link';
 
 export default function Login() {
 	return (
 		<Button
-			onClick={signIn}
+			asChild
 			className='w-full'>
-			<Icons.spotify />
-			Continue with Spotify
+			<Link href='/login/spotify'>
+				<Icons.spotify />
+				Continue with Spotify
+			</Link>
 		</Button>
 	);
 }

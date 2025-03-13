@@ -6,14 +6,11 @@ import { MainNav } from '@/components/layout/main-nav';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 import { Button } from '@/components/ui/button';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import Logout from '@/components/auth/logout';
+import { getCurrentSession } from '@/lib/auth/session';
 
 export async function SiteHeader() {
-	const session = await auth.api.getSession({
-		headers: await headers(), // you need to pass the headers object.
-	});
+	const session = await getCurrentSession();
 
 	return (
 		<header className='border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>

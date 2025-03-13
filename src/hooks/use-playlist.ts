@@ -1,4 +1,3 @@
-import { authClient } from '@/lib/auth-client';
 import { PLAYLISTS_QUERY_KEY } from '@/providers/get-query-client';
 import { durationToSeconds, getDuration } from '@/lib/duration';
 import { usePlaylistStore } from '@/providers/playlist-stores';
@@ -13,10 +12,19 @@ import {
 	useSuspenseQuery,
 } from '@tanstack/react-query';
 
-const { useSession } = authClient;
+// TODO: replace
+function useSession() {
+	return {
+		session: {
+			account: {
+				accessToken: 'faketoken',
+			},
+		},
+	};
+}
 
 export function usePlaylist(playlistId: string) {
-	const { data: session } = useSession();
+	const { session } = useSession();
 	const queryClient = useQueryClient();
 
 	const {

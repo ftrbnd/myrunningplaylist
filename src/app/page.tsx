@@ -1,15 +1,12 @@
 import Login from '@/components/auth/login';
 import PlaylistCollection from '@/components/playlists/playlist-collection';
-import { auth } from '@/lib/auth';
+import { getCurrentSession } from '@/lib/auth/session';
 import { getQueryClient } from '@/providers/get-query-client';
 import { getPlaylists } from '@/services/spotify';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { headers } from 'next/headers';
 
 export default async function Home() {
-	const session = await auth.api.getSession({
-		headers: await headers(), // you need to pass the headers object.
-	});
+	const session = await getCurrentSession();
 	if (!session?.session) return <Login />;
 
 	const queryClient = getQueryClient();
@@ -17,8 +14,8 @@ export default async function Home() {
 		queryKey: ['playlists'],
 		queryFn: () =>
 			getPlaylists({
-				token: session.account.accessToken,
-				spotifyUserId: session.account.accountId,
+				token: session.session.id,
+				spotifyUserId: session.session.userId.toString(),
 			}),
 	});
 
