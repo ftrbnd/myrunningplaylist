@@ -1,43 +1,35 @@
-'use client';
-
 import { Button, ButtonProps } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Link from 'next/link';
+import { logout } from '@/actions';
+import { User } from '@/lib/db/schema';
 
-// TODO: replace
-function useSession() {
-	return {
-		user: {
-			image: 'fakeimage',
-			name: 'fakename',
-		},
-	};
+interface Props extends ButtonProps {
+	user?: User;
 }
 
-export default function Logout(props: ButtonProps) {
-	const session = useSession();
-
-	const handleLogout = async () => {
-		// await signOut()
-	};
-
-	// if (!data?.session) return null;
-
+export function Logout(props: Props) {
 	return (
 		<Button
-			onClick={handleLogout}
+			asChild
+			onClick={logout}
 			variant='outline'
 			{...props}>
-			<Avatar className='h-6 w-6'>
-				{session?.user.image ? (
-					<AvatarImage
-						src={session.user.image}
-						alt={session.user.name}
-					/>
-				) : (
-					<AvatarFallback>{session?.user.name[0].toUpperCase()}</AvatarFallback>
-				)}
-			</Avatar>
-			Log out
+			<Link href='/'>
+				<Avatar className='h-6 w-6'>
+					{props.user?.avatar ? (
+						<AvatarImage
+							src={props.user?.avatar[0]}
+							alt={props.user?.displayName}
+						/>
+					) : (
+						<AvatarFallback>
+							{props.user?.displayName[0].toUpperCase()}
+						</AvatarFallback>
+					)}
+				</Avatar>
+				Log out
+			</Link>
 		</Button>
 	);
 }

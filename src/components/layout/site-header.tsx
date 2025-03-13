@@ -6,7 +6,7 @@ import { MainNav } from '@/components/layout/main-nav';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 import { Button } from '@/components/ui/button';
-import Logout from '@/components/auth/logout';
+import { Logout } from '@/components/auth/logout';
 import { getCurrentSession } from '@/lib/auth/session';
 
 export async function SiteHeader() {
@@ -20,7 +20,12 @@ export async function SiteHeader() {
 					<MobileNav />
 					<div className='flex flex-1 items-center gap-2 justify-end'>
 						<nav className='flex items-center gap-0.5'>
-							{session?.session && <Logout className='hidden md:inline-flex' />}
+							{session?.session && (
+								<Logout
+									user={session.user}
+									className='hidden md:inline-flex'
+								/>
+							)}
 							<Button
 								variant='ghost'
 								size='icon'

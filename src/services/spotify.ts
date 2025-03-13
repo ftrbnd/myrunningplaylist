@@ -1,5 +1,5 @@
 import { createFetch } from '@better-fetch/fetch';
-import { Page, Playlist, Track } from '@spotify/web-api-ts-sdk';
+import { Page, Playlist, Track, UserProfile } from '@spotify/web-api-ts-sdk';
 
 export const $spotify = createFetch({
 	baseURL: 'https://api.spotify.com/v1',
@@ -13,6 +13,19 @@ export const $spotify = createFetch({
 	},
 	throw: true,
 });
+
+export async function getCurrentUser({ token }: { token?: string | null }) {
+	if (!token) throw new Error('Spotify access token is required');
+
+	const user = await $spotify<UserProfile>('/me', {
+		auth: {
+			type: 'Bearer',
+			token,
+		},
+	});
+
+	return { user };
+}
 
 export async function getPlaylists({
 	token,

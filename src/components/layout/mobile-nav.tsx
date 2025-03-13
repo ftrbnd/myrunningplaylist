@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/config/site';
-import Logout from '@/components/auth/logout';
+import { Logout } from '@/components/auth/logout';
 
 export function MobileNav() {
 	const [open, setOpen] = useState(false);

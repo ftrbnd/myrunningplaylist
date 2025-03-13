@@ -1,13 +1,16 @@
 import { InferSelectModel } from 'drizzle-orm';
-import { pgTable, serial, text, integer, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('user', {
-	id: serial('id').primaryKey(),
+	id: text('id').primaryKey(),
+	spotifyId: text('spotify_id').notNull(),
+	displayName: text('display_name').notNull(),
+	avatar: text('avatar').array(),
 });
 
 export const sessions = pgTable('session', {
 	id: text('id').primaryKey(),
-	userId: integer('user_id')
+	userId: text('user_id')
 		.notNull()
 		.references(() => users.id),
 	expiresAt: timestamp('expires_at', {
