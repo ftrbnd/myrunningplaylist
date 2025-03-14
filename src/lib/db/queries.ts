@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { users } from './schema';
+import { NewUser, users, UserTokens } from './schema';
 import { eq } from 'drizzle-orm';
 import { generateRandomString, RandomReader } from '@oslojs/crypto/random';
 
@@ -13,11 +13,7 @@ export async function getUserFromSpotifyId(spotifyId: string) {
 	return user[0];
 }
 
-export async function createUser(
-	spotifyId: string,
-	displayName: string,
-	avatar?: string[]
-) {
+export async function createUser(newUser: NewUser) {
 	const random: RandomReader = {
 		read(bytes) {
 			crypto.getRandomValues(bytes);
@@ -28,13 +24,18 @@ export async function createUser(
 
 	const user = await db
 		.insert(users)
-		.values({
-			id,
-			spotifyId,
-			displayName,
-			avatar,
-		})
+		.values({ id, ...newUser })
 		.returning();
 
 	return user[0];
+}
+
+export async function updateAccessTokens(userId: string, tokens: UserTokens) {
+	const updatedUsers = await db
+		.update(users)
+		.set(tokens)
+		.where(eq(users.id, userId))
+		.returning();
+
+	return updatedUsers[0];
 }

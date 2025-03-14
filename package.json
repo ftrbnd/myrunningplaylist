@@ -7,6 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
+		"db:reset": "tsx ./src/lib/db/reset.ts",
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate"
@@ -34,6 +35,7 @@
 		"clsx": "^2.1.1",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.39.1",
+		"drizzle-seed": "^0.3.1",
 		"lucide-react": "^0.474.0",
 		"motion": "^12.4.10",
 		"next": "15.1.6",

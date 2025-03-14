@@ -6,13 +6,17 @@ import {
 	type OAuth2Tokens,
 } from 'arctic';
 import { spotify } from '@/lib/auth/spotify';
-import { getCurrentUser } from '@/services/spotify';
+import * as spotifyApi from '@/services/spotify';
 import {
 	createSession,
 	generateSessionToken,
 	setSessionTokenCookie,
 } from '@/lib/auth/session';
-import { createUser, getUserFromSpotifyId } from '@/lib/db/queries';
+import {
+	createUser,
+	getUserFromSpotifyId,
+	updateAccessTokens,
+} from '@/lib/db/queries';
 
 export async function GET(request: Request): Promise<Response> {
 	const url = new URL(request.url);
@@ -34,6 +38,49 @@ export async function GET(request: Request): Promise<Response> {
 	let tokens: OAuth2Tokens;
 	try {
 		tokens = await spotify.validateAuthorizationCode(code, null);
+
+		const { user: spotifyUser } = await spotifyApi.getCurrentUser({
+			token: tokens.accessToken(),
+		});
+
+		const existingUser = await getUserFromSpotifyId(spotifyUser.id);
+		if (existingUser) {
+			const sessionToken = generateSessionToken();
+			const session = await createSession(sessionToken, existingUser.id);
+			await setSessionTokenCookie(sessionToken, session.expiresAt);
+
+			await updateAccessTokens(existingUser.id, {
+				accessToken: tokens.accessToken(),
+				refreshToken: tokens.refreshToken(),
+				accessTokenExpiresAt: tokens.accessTokenExpiresAt(),
+			});
+
+			return new Response(null, {
+				status: 302,
+				headers: {
+					Location: '/',
+				},
+			});
+		}
+
+		const newUser = await createUser({
+			spotifyId: spotifyUser.id,
+			displayName: spotifyUser.display_name,
+			avatar: spotifyUser.images.map((img) => img.url),
+			accessToken: tokens.accessToken(),
+			refreshToken: tokens.refreshToken(),
+			accessTokenExpiresAt: tokens.accessTokenExpiresAt(),
+		});
+
+		const sessionToken = generateSessionToken();
+		const session = await createSession(sessionToken, newUser.id);
+		setSessionTokenCookie(sessionToken, session.expiresAt);
+		return new Response(null, {
+			status: 302,
+			headers: {
+				Location: '/',
+			},
+		});
 	} catch (e) {
 		if (e instanceof OAuth2RequestError) {
 			// Invalid authorization code, credentials, or redirect URI
@@ -55,40 +102,4 @@ export async function GET(request: Request): Promise<Response> {
 			status: 400,
 		});
 	}
-
-	const { user } = await getCurrentUser({
-		token: tokens.accessToken(),
-	});
-	const spotifyUserId = user.id;
-	const spotifyUsername = user.display_name;
-	const spotifyImages = user.images;
-
-	const existingUser = await getUserFromSpotifyId(spotifyUserId);
-	if (existingUser !== null) {
-		const sessionToken = generateSessionToken();
-		const session = await createSession(sessionToken, existingUser.id);
-		await setSessionTokenCookie(sessionToken, session.expiresAt);
-		return new Response(null, {
-			status: 302,
-			headers: {
-				Location: '/',
-			},
-		});
-	}
-
-	const newUser = await createUser(
-		spotifyUserId,
-		spotifyUsername,
-		spotifyImages.map((img) => img.url)
-	);
-
-	const sessionToken = generateSessionToken();
-	const session = await createSession(sessionToken, newUser.id);
-	setSessionTokenCookie(sessionToken, session.expiresAt);
-	return new Response(null, {
-		status: 302,
-		headers: {
-			Location: '/',
-		},
-	});
 }
