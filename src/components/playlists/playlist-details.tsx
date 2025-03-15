@@ -8,7 +8,7 @@ import { usePlaylist } from '@/hooks/use-playlist';
 import { MotionEditingToast } from '@/components/playlists/editing-toast';
 import { AnimatePresence } from 'motion/react';
 import { RaceMarkers } from '@/components/playlists/race-markers';
-import { ImageThumbnail } from './image-thumbnail';
+import { ImageThumbnail } from '@/components/playlists/image-thumbnail';
 
 interface Props {
 	id: string;

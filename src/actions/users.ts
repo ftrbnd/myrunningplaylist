@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { NewUser, users, UserTokens } from './schema';
+import { NewUser, users, UserTokens } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { generateRandomString, RandomReader } from '@oslojs/crypto/random';
 

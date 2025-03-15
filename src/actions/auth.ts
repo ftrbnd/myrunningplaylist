@@ -7,7 +7,7 @@ import { encodeHexLowerCase } from '@oslojs/encoding';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { cache } from 'react';
 import { cookies } from 'next/headers';
-import { updateAccessTokens } from '@/lib/db/queries';
+import { updateAccessTokens } from '@/actions/users';
 import * as spotify from '@/services/spotify';
 import { redirect } from 'next/navigation';
 

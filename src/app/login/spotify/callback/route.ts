@@ -12,7 +12,7 @@ import {
 	createUser,
 	getUserFromSpotifyId,
 	updateAccessTokens,
-} from '@/lib/db/queries';
+} from '@/actions/users';
 import { generateSessionToken } from '@/lib/auth/session';
 import { createSession, setSessionTokenCookie } from '@/actions/auth';
 

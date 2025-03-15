@@ -10,7 +10,7 @@ import { ComponentProps } from 'react';
 import { DragControls, motion } from 'motion/react';
 import { Grip } from 'lucide-react';
 import { formattedDuration, getDuration } from '@/lib/duration';
-import { ImageThumbnail } from './image-thumbnail';
+import { ImageThumbnail } from '@/components/playlists/image-thumbnail';
 
 interface Props extends ComponentProps<'div'> {
 	track: Track;

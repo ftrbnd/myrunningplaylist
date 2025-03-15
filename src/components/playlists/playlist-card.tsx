@@ -1,6 +1,6 @@
 import { Playlist, TrackItem } from '@spotify/web-api-ts-sdk';
 import Link from 'next/link';
-import { ImageThumbnail } from './image-thumbnail';
+import { ImageThumbnail } from '@/components/playlists/image-thumbnail';
 
 interface Props {
 	playlist: Playlist<TrackItem>;
