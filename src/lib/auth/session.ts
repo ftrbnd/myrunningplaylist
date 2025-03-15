@@ -8,6 +8,8 @@ import {
 import { sha256 } from '@oslojs/crypto/sha2';
 import { cache } from 'react';
 import { cookies } from 'next/headers';
+import { updateAccessTokens } from '@/lib/db/queries';
+import * as spotify from '@/services/spotify';
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
@@ -34,20 +36,25 @@ export async function validateSessionToken(
 	token: string
 ): Promise<SessionValidationResult> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const result = await db
+
+	const userSessions = await db
 		.select({ user: users, session: sessions })
 		.from(sessions)
 		.innerJoin(users, eq(sessions.userId, users.id))
 		.where(eq(sessions.id, sessionId));
-	if (result.length < 1) {
+	if (userSessions.length < 1) {
 		return { session: null, user: null };
 	}
-	const { user, session } = result[0];
+
+	const { user, session } = userSessions[0];
+
 	if (Date.now() >= session.expiresAt.getTime()) {
 		await db.delete(sessions).where(eq(sessions.id, session.id));
 		return { session: null, user: null };
 	}
+
 	if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
+		// 15 days
 		session.expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 		await db
 			.update(sessions)
@@ -56,6 +63,10 @@ export async function validateSessionToken(
 			})
 			.where(eq(sessions.id, session.id));
 	}
+
+	const tokens = await spotify.refreshAccessToken(user.refreshToken);
+	await updateAccessTokens(user.id, tokens);
+
 	return { session, user };
 }
 

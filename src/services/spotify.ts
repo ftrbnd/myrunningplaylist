@@ -1,5 +1,7 @@
+import { UserTokens } from '@/lib/db/schema';
 import { createFetch } from '@better-fetch/fetch';
 import { Page, Playlist, Track, UserProfile } from '@spotify/web-api-ts-sdk';
+import * as encoding from '@oslojs/encoding';
 
 export const $spotify = createFetch({
 	baseURL: 'https://api.spotify.com/v1',
@@ -13,6 +15,38 @@ export const $spotify = createFetch({
 	},
 	throw: true,
 });
+
+export async function refreshAccessToken(
+	refreshToken: string
+): Promise<UserTokens> {
+	const body = new URLSearchParams();
+	body.set('grant_type', 'refresh_token');
+	body.set('refresh_token', refreshToken);
+
+	const bytes = new TextEncoder().encode(
+		`${process.env.SPOTIFY_CLIENT_ID!}:${process.env.SPOTIFY_CLIENT_SECRET!}`
+	);
+	const credentials = encoding.encodeBase64(bytes);
+
+	const res = await fetch('https://accounts.spotify.com/api/token', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			Accept: 'application/json',
+			Authorization: `Basic ${credentials}`,
+		},
+		body,
+	});
+
+	const data = await res.json();
+	const tokens: UserTokens = {
+		accessToken: data.access_token,
+		accessTokenExpiresAt: new Date(new Date().getTime() + 3600 * 1000),
+		refreshToken: data.refresh_token ?? refreshToken,
+	};
+
+	return tokens;
+}
 
 export async function getCurrentUser({ token }: { token?: string | null }) {
 	if (!token) throw new Error('Spotify access token is required');
