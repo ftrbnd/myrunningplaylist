@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
-import { logout } from '@/actions';
+import { logout } from '@/actions/auth';
 import { User } from '@/lib/db/schema';
 
 interface Props extends ButtonProps {

@@ -1,13 +1,13 @@
-import Login from '@/components/auth/login';
+import { getCurrentSession } from '@/actions/auth';
 import PlaylistCollection from '@/components/playlists/playlist-collection';
-import { getCurrentSession } from '@/lib/auth/session';
 import { getQueryClient } from '@/providers/get-query-client';
 import { getPlaylists } from '@/services/spotify';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { redirect } from 'next/navigation';
 
 export default async function Home() {
 	const session = await getCurrentSession();
-	if (!session?.session) return <Login />;
+	if (!session?.session) return redirect('/login');
 
 	const queryClient = getQueryClient();
 	queryClient.prefetchQuery({

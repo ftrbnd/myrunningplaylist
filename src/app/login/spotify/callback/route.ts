@@ -7,16 +7,14 @@ import {
 } from 'arctic';
 import { spotify } from '@/lib/auth/spotify';
 import * as spotifyApi from '@/services/spotify';
-import {
-	createSession,
-	generateSessionToken,
-	setSessionTokenCookie,
-} from '@/lib/auth/session';
+
 import {
 	createUser,
 	getUserFromSpotifyId,
 	updateAccessTokens,
 } from '@/lib/db/queries';
+import { generateSessionToken } from '@/lib/auth/session';
+import { createSession, setSessionTokenCookie } from '@/actions/auth';
 
 export async function GET(request: Request): Promise<Response> {
 	const url = new URL(request.url);

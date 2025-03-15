@@ -2,7 +2,7 @@ import { getPlaylist } from '@/services/spotify';
 import { getQueryClient } from '@/providers/get-query-client';
 import { PlaylistDetails } from '@/components/playlists/playlist-details';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { getCurrentSession } from '@/lib/auth/session';
+import { getCurrentSession } from '@/actions/auth';
 
 interface Props {
 	params: Promise<{ playlistId: string }>;

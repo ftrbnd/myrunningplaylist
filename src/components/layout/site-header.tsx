@@ -7,7 +7,7 @@ import { MobileNav } from '@/components/layout/mobile-nav';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Logout } from '@/components/auth/logout';
-import { getCurrentSession } from '@/lib/auth/session';
+import { getCurrentSession } from '@/actions/auth';
 
 export async function SiteHeader() {
 	const session = await getCurrentSession();
