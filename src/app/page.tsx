@@ -1,21 +1,24 @@
 import { getCurrentSession } from '@/actions/auth';
 import PlaylistCollection from '@/components/playlists/playlist-collection';
-import { getQueryClient } from '@/providers/get-query-client';
+import {
+	getQueryClient,
+	PLAYLISTS_QUERY_KEY,
+} from '@/providers/get-query-client';
 import { getPlaylists } from '@/services/spotify';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
 export default async function Home() {
-	const session = await getCurrentSession();
-	if (!session?.session) return redirect('/login');
+	const { session, user } = await getCurrentSession();
+	if (!session) return redirect('/login');
 
 	const queryClient = getQueryClient();
 	queryClient.prefetchQuery({
-		queryKey: ['playlists'],
+		queryKey: [PLAYLISTS_QUERY_KEY],
 		queryFn: () =>
 			getPlaylists({
-				token: session.session.id,
-				spotifyUserId: session.session.userId.toString(),
+				token: user.accessToken,
+				spotifyUserId: user.spotifyId,
 			}),
 	});
 

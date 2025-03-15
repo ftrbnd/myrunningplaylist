@@ -3,8 +3,8 @@ import { LoginForm } from '@/components/auth/login-form';
 import { redirect } from 'next/navigation';
 
 export default async function Page() {
-	const { user } = await getCurrentSession();
-	if (user) return redirect('/');
+	const { session } = await getCurrentSession();
+	if (session) return redirect('/');
 
 	return (
 		<div className='flex-col-full items-center justify-center'>

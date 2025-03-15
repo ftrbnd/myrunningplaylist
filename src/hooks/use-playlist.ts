@@ -11,20 +11,10 @@ import {
 	useQueryClient,
 	useSuspenseQuery,
 } from '@tanstack/react-query';
-
-// TODO: replace
-function useSession() {
-	return {
-		session: {
-			account: {
-				accessToken: 'faketoken',
-			},
-		},
-	};
-}
+import { useSession } from '@/hooks/use-session';
 
 export function usePlaylist(playlistId: string) {
-	const { session } = useSession();
+	const session = useSession();
 	const queryClient = useQueryClient();
 
 	const {
@@ -34,7 +24,7 @@ export function usePlaylist(playlistId: string) {
 		queryKey: [PLAYLISTS_QUERY_KEY, playlistId],
 		queryFn: () =>
 			getPlaylist({
-				token: session?.account.accessToken,
+				token: session.user?.accessToken,
 				id: playlistId,
 			}),
 	});
@@ -72,7 +62,7 @@ export function usePlaylist(playlistId: string) {
 					);
 
 					return reorderPlaylist({
-						token: session?.account.accessToken,
+						token: session.user?.accessToken,
 						playlist,
 						rangeStart: originalIndex,
 						insertBefore: newIndex + 1,
@@ -94,7 +84,7 @@ export function usePlaylist(playlistId: string) {
 	const removeTrackMutation = useMutation({
 		mutationFn: ({ trackUris }: { trackUris: string[] }) =>
 			removeTracksFromPlaylist({
-				token: session?.account.accessToken,
+				token: session.user?.accessToken,
 				playlistId: playlist.id,
 				trackUris,
 			}),

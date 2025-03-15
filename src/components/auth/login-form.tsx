@@ -1,7 +1,7 @@
 import { ComponentProps } from 'react';
 import { cn } from '@/lib/cn';
 import { Card, CardContent } from '@/components/ui/card';
-import Login from '@/components/auth/login';
+import { Login } from '@/components/auth/login';
 import Image from 'next/image';
 import { siteConfig } from '@/config/site';
 

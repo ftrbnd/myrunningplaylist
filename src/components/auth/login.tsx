@@ -1,10 +1,8 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/layout/icons';
 import Link from 'next/link';
 
-export default function Login() {
+export function Login() {
 	return (
 		<Button
 			asChild

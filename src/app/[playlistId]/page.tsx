@@ -1,5 +1,8 @@
 import { getPlaylist } from '@/services/spotify';
-import { getQueryClient } from '@/providers/get-query-client';
+import {
+	getQueryClient,
+	PLAYLISTS_QUERY_KEY,
+} from '@/providers/get-query-client';
 import { PlaylistDetails } from '@/components/playlists/playlist-details';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { getCurrentSession } from '@/actions/auth';
@@ -15,10 +18,10 @@ export default async function Page({ params }: Props) {
 
 	const queryClient = getQueryClient();
 	queryClient.prefetchQuery({
-		queryKey: ['playlists', playlistId],
+		queryKey: [PLAYLISTS_QUERY_KEY, playlistId],
 		queryFn: () =>
 			getPlaylist({
-				token: session?.session?.id,
+				token: session.user?.accessToken,
 				id: playlistId,
 			}),
 	});
