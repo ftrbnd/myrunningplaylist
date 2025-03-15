@@ -19,8 +19,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/config/site';
 import { Logout } from '@/components/auth/logout';
+import { useSession } from '@/hooks/use-session';
 
 export function MobileNav() {
+	const { session, user } = useSession();
 	const [open, setOpen] = useState(false);
 	const { setMetaColor, metaColor } = useMetaColor();
 
@@ -71,7 +73,13 @@ export function MobileNav() {
 					</div>
 				</div>
 				<DrawerFooter>
-					<Logout variant='secondary' />
+					{session && (
+						<Logout
+							user={user}
+							variant='secondary'
+							onClick={() => setOpen(false)}
+						/>
+					)}
 					<DrawerClose asChild>
 						<Button variant='outline'>Cancel</Button>
 					</DrawerClose>

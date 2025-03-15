@@ -10,7 +10,7 @@ import { Logout } from '@/components/auth/logout';
 import { getCurrentSession } from '@/actions/auth';
 
 export async function SiteHeader() {
-	const session = await getCurrentSession();
+	const { session, user } = await getCurrentSession();
 
 	return (
 		<header className='border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
@@ -20,9 +20,9 @@ export async function SiteHeader() {
 					<MobileNav />
 					<div className='flex flex-1 items-center gap-2 justify-end'>
 						<nav className='flex items-center gap-0.5'>
-							{session?.session && (
+							{session && (
 								<Logout
-									user={session.user}
+									user={user}
 									className='hidden md:inline-flex'
 								/>
 							)}

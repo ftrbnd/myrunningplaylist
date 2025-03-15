@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, ButtonProps } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
@@ -8,11 +10,14 @@ interface Props extends ButtonProps {
 	user?: User;
 }
 
-export function Logout(props: Props) {
+export function Logout({ onClick, ...props }: Props) {
 	return (
 		<Button
 			asChild
-			onClick={logout}
+			onClick={(e) => {
+				logout();
+				if (onClick) onClick(e);
+			}}
 			variant='outline'
 			{...props}>
 			<Link href='/'>
