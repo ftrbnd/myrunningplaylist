@@ -29,8 +29,8 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { usePlaylist } from '@/hooks/use-playlist';
 import { durationSchema } from '@/lib/duration';
+import { useEditPlaylist } from '@/hooks/use-edit-playlist';
 
 const formSchema = distanceSchema.and(durationSchema);
 
@@ -40,7 +40,7 @@ interface RaceFormProps {
 }
 
 export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
-	const playlist = usePlaylist(playlistId);
+	const { store } = useEditPlaylist(playlistId);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -57,11 +57,11 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 		if (!raceValue)
 			throw new Error(`Race with name '${values.distance}' was not found`);
 
-		playlist.setRace({
+		store.setRace({
 			name: values.distance,
 			value: raceValue,
 		});
-		playlist.setGoalTime({
+		store.setGoalTime({
 			hours: values.hours,
 			minutes: values.minutes,
 			seconds: values.seconds,
@@ -186,7 +186,7 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 						onClick={(e) => {
 							e.preventDefault();
 							form.reset();
-							playlist.setRace(null);
+							store.setRace(null);
 						}}>
 						Reset
 					</Button>

@@ -1,6 +1,4 @@
 import { PLAYLISTS_QUERY_KEY } from '@/providers/get-query-client';
-import { durationToSeconds, getDuration } from '@/lib/duration';
-import { usePlaylistStore } from '@/providers/playlist-stores';
 import {
 	getPlaylist,
 	removeTracksFromPlaylist,
@@ -12,6 +10,7 @@ import {
 	useSuspenseQuery,
 } from '@tanstack/react-query';
 import { useSession } from '@/hooks/use-session';
+import { Track } from '@spotify/web-api-ts-sdk';
 
 export function usePlaylist(playlistId: string) {
 	const session = useSession();
@@ -28,31 +27,10 @@ export function usePlaylist(playlistId: string) {
 				id: playlistId,
 			}),
 	});
-	const store = usePlaylistStore(playlist, (state) => state);
-
-	const resetTracks = async () => {
-		const { data } = await refetch();
-		if (data?.playlist)
-			store.setTracks(data?.playlist.tracks.items.map((t) => t.track));
-	};
-
-	const tracksAreReordered = store.tracks.some(
-		(track, i) => playlist.tracks.items.at(i)?.track.id !== track.id
-	);
-
-	const runtimeMs = playlist.tracks.items.reduce(
-		(prev, cur) => prev + cur.track.duration_ms,
-		0
-	);
-	const duration = getDuration(runtimeMs);
-
-	const runtimeSeconds = runtimeMs / 1000;
-	const goalTimeSeconds = durationToSeconds(store.goalTime);
-	const goalTimeToRuntimeRatio = goalTimeSeconds / runtimeSeconds;
 
 	const reorderMutation = useMutation({
-		mutationFn: async () => {
-			const promises = store.tracks
+		mutationFn: async (newOrder: Track[]) => {
+			const promises = newOrder
 				.map((track, newIndex) => {
 					const original = playlist.tracks.items;
 					if (original.at(newIndex)?.track.uri === track.uri) return;
@@ -96,25 +74,9 @@ export function usePlaylist(playlistId: string) {
 	});
 
 	return {
-		// tanstack-query
-		original: playlist,
+		playlist,
+		refetch,
 		submitReorder: reorderMutation.mutate,
 		removeTracks: removeTrackMutation.mutate,
-		// zustand
-		tracks: store.tracks,
-		setTracks: store.setTracks,
-		resetTracks,
-		handleReorder: store.reorderTrack,
-		race: store.race,
-		setRace: store.setRace,
-		goalTime: store.goalTime,
-		setGoalTime: store.setGoalTime,
-		// derived state
-		duration,
-		runtimeMs,
-		runtimeSeconds,
-		goalTimeSeconds,
-		goalTimeToRuntimeRatio,
-		tracksAreReordered,
 	};
 }

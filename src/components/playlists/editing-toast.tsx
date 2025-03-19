@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { useEditPlaylist } from '@/hooks/use-edit-playlist';
 import { usePlaylist } from '@/hooks/use-playlist';
 import { cn } from '@/lib/cn';
 import { motion } from 'motion/react';
@@ -11,7 +12,8 @@ interface Props extends ComponentProps<'div'> {
 export const MotionEditingToast = motion.create(EditingToast);
 
 function EditingToast({ playlistId, ...props }: Props) {
-	const playlist = usePlaylist(playlistId);
+	const { submitReorder } = usePlaylist(playlistId);
+	const { store, resetTracks } = useEditPlaylist(playlistId);
 
 	return (
 		<div
@@ -31,10 +33,10 @@ function EditingToast({ playlistId, ...props }: Props) {
 			<div className='flex gap-2 items-center'>
 				<Button
 					variant='destructive'
-					onClick={playlist.resetTracks}>
+					onClick={resetTracks}>
 					Reset
 				</Button>
-				<Button onClick={() => playlist.submitReorder()}>Save</Button>
+				<Button onClick={() => submitReorder(store.tracks)}>Save</Button>
 			</div>
 		</div>
 	);

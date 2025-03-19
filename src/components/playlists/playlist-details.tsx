@@ -9,31 +9,33 @@ import { MotionEditingToast } from '@/components/playlists/editing-toast';
 import { AnimatePresence } from 'motion/react';
 import { RaceMarkers } from '@/components/playlists/race-markers';
 import { ImageThumbnail } from '@/components/playlists/image-thumbnail';
+import { useEditPlaylist } from '@/hooks/use-edit-playlist';
 
 interface Props {
 	id: string;
 }
 
 export function PlaylistDetails({ id }: Props) {
-	const playlist = usePlaylist(id);
+	const { playlist } = usePlaylist(id);
+	const { duration, tracksAreReordered } = useEditPlaylist(id);
 
 	return (
 		<>
 			<div className='flex flex-col md:flex-row gap-2 justify-between items-center w-full mb-2'>
 				<div className='flex gap-4 items-center w-full md:w-auto'>
 					<ImageThumbnail
-						images={playlist.original.images}
+						images={playlist.images}
 						className='h-24 w-24 rounded-md'
-						alt={playlist.original.name}
+						alt={playlist.name}
 					/>
 
 					<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl line-clamp-2 overflow-visible'>
-						{playlist.original.name}
+						{playlist.name}
 					</h1>
 				</div>
 
 				<p className='text-muted-foreground self-start md:self-center'>
-					Total runtime: {durationDescription(playlist.duration)}
+					Total runtime: {durationDescription(duration)}
 				</p>
 			</div>
 			<div className='flex flex-col gap-2 md:grid md:grid-cols-2'>
@@ -50,14 +52,14 @@ export function PlaylistDetails({ id }: Props) {
 					</CardContent>
 				</Card>
 				<div className='grid grid-flow-col md:gap-1'>
-					<PlaylistTracks playlistId={playlist.original.id} />
+					<PlaylistTracks playlistId={playlist.id} />
 					<RaceMarkers
-						playlistId={playlist.original.id}
+						playlistId={playlist.id}
 						className='place-self-end'
 					/>
 				</div>
 				<AnimatePresence initial={false}>
-					{playlist.tracksAreReordered && (
+					{tracksAreReordered && (
 						<MotionEditingToast
 							initial={{ opacity: 0, scale: 0 }}
 							animate={{ opacity: 1, scale: 1 }}

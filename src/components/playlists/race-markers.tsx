@@ -1,6 +1,5 @@
 'use client';
 
-import { usePlaylist } from '@/hooks/use-playlist';
 import { cn } from '@/lib/cn';
 import { allRaceIntervals } from '@/lib/race';
 import { ComponentProps } from 'react';
@@ -11,19 +10,20 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { AnimatePresence, motion } from 'motion/react';
+import { useEditPlaylist } from '@/hooks/use-edit-playlist';
 
 interface Props extends ComponentProps<'div'> {
 	playlistId: string;
 }
 
 export function RaceMarkers({ playlistId, ...props }: Props) {
-	const playlist = usePlaylist(playlistId);
-	if (!playlist.race) return null;
+	const { store, goalTimeToRuntimeRatio } = useEditPlaylist(playlistId);
+	if (!store.race) return null;
 
 	// TODO: add timestamp at each interval
 
-	const percentage = playlist.goalTimeToRuntimeRatio * 100;
-	const intervals = allRaceIntervals.get(playlist.race.name);
+	const percentage = goalTimeToRuntimeRatio * 100;
+	const intervals = allRaceIntervals.get(store.race.name);
 
 	return (
 		<AnimatePresence>

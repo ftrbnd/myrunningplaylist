@@ -23,38 +23,39 @@ import {
 import { useRaisedShadow } from '@/hooks/use-raised-shadow';
 import { ComponentProps } from 'react';
 import { formattedDuration, getDuration } from '@/lib/duration';
+import { useEditPlaylist } from '@/hooks/use-edit-playlist';
 
 interface Props extends ComponentProps<'ul'> {
 	playlistId: string;
 }
 
 export function PlaylistTracks({ playlistId, ...props }: Props) {
-	const playlist = usePlaylist(playlistId);
+	const { store, duration } = useEditPlaylist(playlistId);
 
 	return (
-		<AnimatePresence>
-			<Reorder.Group
-				values={playlist.tracks}
-				onReorder={playlist.setTracks}
-				className={cn(
-					'flex flex-col gap-2 md:col-start-1 md:row-start-1',
-					props.className
-				)}>
-				{playlist.tracks.map((item, index) => (
+		<Reorder.Group
+			values={store.tracks}
+			onReorder={store.setTracks}
+			className={cn(
+				'flex flex-col gap-2 md:col-start-1 md:row-start-1',
+				props.className
+			)}>
+			<AnimatePresence>
+				{store.tracks.map((item, index) => (
 					<ReorderableTrackItem
-						key={`${item.id}-${index}`}
+						key={item.id ?? item.uri}
 						value={item}
 						index={index}
 						playlistId={playlistId}
 					/>
 				))}
-				<li className='flex gap-1'>
-					<Badge variant='destructive'>
-						Finish: {formattedDuration(playlist.duration)}
-					</Badge>
-				</li>
-			</Reorder.Group>
-		</AnimatePresence>
+			</AnimatePresence>
+			<li className='flex gap-1'>
+				<Badge variant='destructive'>
+					Finish: {formattedDuration(duration)}
+				</Badge>
+			</li>
+		</Reorder.Group>
 	);
 }
 
@@ -65,14 +66,15 @@ interface TrackItemProps {
 }
 
 function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
-	const playlist = usePlaylist(playlistId);
+	const { playlist, removeTracks } = usePlaylist(playlistId);
+	const { store } = useEditPlaylist(playlistId);
 
 	const y = useMotionValue(0);
 	const boxShadow = useRaisedShadow(y);
 	const controls = useDragControls();
 
 	const getStartingTimestamp = (trackIndex: number) => {
-		const tracksBefore = playlist.tracks.filter((_, i) => i < trackIndex);
+		const tracksBefore = store.tracks.filter((_, i) => i < trackIndex);
 		const currentMs = tracksBefore.reduce(
 			(prev, cur) => prev + cur.duration_ms,
 			0
@@ -83,14 +85,14 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 	};
 
 	const trackIsOutOfOrder = (index: number, track: Track) => {
-		const original = playlist.original.tracks.items.at(index)?.track;
+		const original = playlist.tracks.items.at(index)?.track;
 		if (!original) return false;
 
 		return original.uri !== track.uri;
 	};
 
 	const handleClick = (track: Track) => {
-		playlist.removeTracks({ trackUris: [track.uri] });
+		removeTracks({ trackUris: [track.uri] });
 	};
 
 	return (
@@ -113,15 +115,15 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 			<div className='flex gap-2 items-center'>
 				<div className='grid grid-rows-2 gap-1'>
 					<Button
-						onClick={() => playlist.handleReorder(index, 'up')}
+						onClick={() => store.reorderTrack(index, 'up')}
 						disabled={index === 0}
 						variant='outline'
 						size='icon'>
 						<ArrowUp />
 					</Button>
 					<Button
-						onClick={() => playlist.handleReorder(index, 'down')}
-						disabled={index === playlist.tracks.length - 1}
+						onClick={() => store.reorderTrack(index, 'down')}
+						disabled={index === store.tracks.length - 1}
 						variant='outline'
 						size='icon'>
 						<ArrowDown />
