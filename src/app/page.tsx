@@ -9,8 +9,8 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
 export default async function Home() {
-	const { session, user } = await getCurrentSession();
-	if (!session) return redirect('/login');
+	const { user } = await getCurrentSession();
+	if (!user) return redirect('/login');
 
 	const queryClient = getQueryClient();
 	queryClient.prefetchQuery({
