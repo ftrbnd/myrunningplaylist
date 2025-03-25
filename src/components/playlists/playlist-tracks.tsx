@@ -3,7 +3,7 @@
 import { cn } from '@/lib/cn';
 import { Track } from '@spotify/web-api-ts-sdk';
 import { Badge } from '@/components/ui/badge';
-import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
+import { ArrowUp, ArrowDown, Trash2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TrackDetails } from '@/components/playlists/track-details';
 import { usePlaylist } from '@/hooks/use-playlist';
@@ -19,12 +19,18 @@ import { useRaisedShadow } from '@/hooks/use-raised-shadow';
 import { ComponentProps } from 'react';
 import { formattedDuration, getDuration } from '@/lib/duration';
 import { useEditPlaylist } from '@/hooks/use-edit-playlist';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface Props extends ComponentProps<'ul'> {
 	playlistId: string;
+	showOverflowWarning: boolean;
 }
 
-export function PlaylistTracks({ playlistId, ...props }: Props) {
+export function PlaylistTracks({
+	playlistId,
+	showOverflowWarning,
+	...props
+}: Props) {
 	const { store, duration } = useEditPlaylist(playlistId);
 
 	return (
@@ -50,6 +56,15 @@ export function PlaylistTracks({ playlistId, ...props }: Props) {
 					Finish: {formattedDuration(duration)}
 				</Badge>
 			</li>
+			{showOverflowWarning && (
+				<Alert variant='destructive'>
+					<AlertCircle className='h-4 w-4' />
+					<AlertTitle>Your playlist is too short!</AlertTitle>
+					<AlertDescription>
+						Add more tracks to increase the runtime.
+					</AlertDescription>
+				</Alert>
+			)}
 		</Reorder.Group>
 	);
 }

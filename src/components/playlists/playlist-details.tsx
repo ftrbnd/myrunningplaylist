@@ -10,6 +10,7 @@ import { AnimatePresence } from 'motion/react';
 import { RaceMarkers } from '@/components/playlists/race-markers';
 import { ImageThumbnail } from '@/components/playlists/image-thumbnail';
 import { useEditPlaylist } from '@/hooks/use-edit-playlist';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 interface Props {
 	id: string;
@@ -17,7 +18,18 @@ interface Props {
 
 export function PlaylistDetails({ id }: Props) {
 	const { playlist } = usePlaylist(id);
-	const { duration, tracksAreReordered, pace } = useEditPlaylist(id);
+	const { duration, tracksAreReordered, pace, store } = useEditPlaylist(id);
+
+	const [isOverflowing, setIsOverflowing] = useState(false);
+	const ref = useRef<HTMLDivElement | null>(null);
+
+	useLayoutEffect(() => {
+		if (ref.current) {
+			const overflow = ref.current.scrollHeight > ref.current.clientHeight;
+
+			setIsOverflowing(overflow);
+		}
+	}, [store.race]);
 
 	return (
 		<>
@@ -59,8 +71,13 @@ export function PlaylistDetails({ id }: Props) {
 							Pace <span className='text-primary'>{pace}</span>
 						</h2>
 					)}
-					<div className='grid grid-flow-col md:gap-1'>
-						<PlaylistTracks playlistId={playlist.id} />
+					<div
+						ref={ref}
+						className='grid grid-flow-col md:gap-1 overflow-y-clip'>
+						<PlaylistTracks
+							playlistId={playlist.id}
+							showOverflowWarning={isOverflowing}
+						/>
 						<RaceMarkers
 							playlistId={playlist.id}
 							className='place-self-end'
