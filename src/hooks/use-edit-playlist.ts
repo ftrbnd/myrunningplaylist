@@ -6,32 +6,56 @@ import {
 	formattedDuration,
 	getDuration,
 } from '@/lib/duration';
-import { Race, allRaces } from '@/lib/race';
+import { ImperialRaceValue, MetricRaceValue, Race, allRaces } from '@/lib/race';
 
-function getPace(race?: Race | null, goalTime?: Duration | null) {
+function getDistanceValue(race?: Race | null, goalTime?: Duration | null) {
 	if (!race || !goalTime) return null;
 
 	const distanceValue = allRaces.get(race.name);
-	if (!distanceValue) return null;
+	return distanceValue;
+}
+
+function getSecondsPerBaseUnit(
+	goalTime?: Duration | null,
+	distanceValue?: MetricRaceValue | ImperialRaceValue | null
+) {
+	if (!goalTime || !distanceValue) return null;
 
 	const seconds = durationToSeconds(goalTime);
 
 	if (distanceValue >= 400) {
-		// metric unit race: minutes per km
 		const kilometers = Math.floor(distanceValue / 1000);
 		const secondsPerKm = Math.floor(seconds / kilometers);
-		const d = getDuration(secondsPerKm * 1000);
-		const fmt = formattedDuration(d);
-
-		return `${fmt}/km`;
+		return secondsPerKm;
 	} else {
-		// imperial unit race: minutes per mile
 		const secondsPerMile = Math.floor(seconds / distanceValue);
-		const d = getDuration(secondsPerMile * 1000);
-		const fmt = formattedDuration(d);
-
-		return `${fmt}/mi`;
+		return secondsPerMile;
 	}
+}
+
+function getPace(race?: Race | null, goalTime?: Duration | null) {
+	const distanceValue = getDistanceValue(race, goalTime);
+	if (!distanceValue)
+		return {
+			pace: null,
+			secondsPerUnit: null,
+		};
+
+	const secondsPerUnit = getSecondsPerBaseUnit(goalTime, distanceValue);
+	if (!secondsPerUnit)
+		return {
+			pace: null,
+			secondsPerUnit: null,
+		};
+
+	const unit = distanceValue >= 400 ? 'km' : 'mi';
+	const d = getDuration(secondsPerUnit * 1000);
+	const fmt = formattedDuration(d);
+
+	return {
+		pace: `${fmt}/${unit}`,
+		secondsPerUnit,
+	};
 }
 
 export function useEditPlaylist(playlistId: string) {
@@ -58,7 +82,7 @@ export function useEditPlaylist(playlistId: string) {
 	const goalTimeSeconds = durationToSeconds(store.goalTime);
 	const goalTimeToRuntimeRatio = goalTimeSeconds / runtimeSeconds;
 
-	const pace = getPace(store.race, store.goalTime);
+	const { pace, secondsPerUnit } = getPace(store.race, store.goalTime);
 
 	return {
 		store,
@@ -71,5 +95,6 @@ export function useEditPlaylist(playlistId: string) {
 		goalTimeToRuntimeRatio,
 		tracksAreReordered,
 		pace,
+		secondsPerUnit,
 	};
 }

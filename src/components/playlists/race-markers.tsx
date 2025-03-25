@@ -11,17 +11,26 @@ import {
 } from '@/components/ui/tooltip';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEditPlaylist } from '@/hooks/use-edit-playlist';
+import { getDuration, formattedDuration } from '@/lib/duration';
 
 interface Props extends ComponentProps<'div'> {
 	playlistId: string;
 }
 
+function getTimestamp(secondsPerUnit: number | null, position: number) {
+	if (!secondsPerUnit) return null;
+
+	const d = getDuration(secondsPerUnit * 1000 * position);
+	return formattedDuration(d);
+}
+
 export function RaceMarkers({ playlistId, ...props }: Props) {
-	const { store, goalTimeToRuntimeRatio } = useEditPlaylist(playlistId);
+	const { store, goalTimeToRuntimeRatio, secondsPerUnit } =
+		useEditPlaylist(playlistId);
 	if (!store.race || !store.goalTime) return null;
 
 	const heightPercentage = goalTimeToRuntimeRatio * 100;
-	const intervals = allRaceIntervals.get(store.race.name);
+	const distanceMarkers = allRaceIntervals.get(store.race.name);
 
 	return (
 		<AnimatePresence>
@@ -41,10 +50,11 @@ export function RaceMarkers({ playlistId, ...props }: Props) {
 					'bg-gradient-to-b from-green-400 dark:from-green-600 via-yellow-400 dark:via-yellow-600 to-red-600 dark:to-red-800',
 					props.className
 				)}>
-				{intervals?.slice(0, -1).map((interval, i) => (
+				{distanceMarkers?.slice(0, -1).map((distance, i) => (
 					<Marker
 						key={i}
-						label={interval}
+						distance={distance}
+						timestamp={getTimestamp(secondsPerUnit, i + 1)}
 					/>
 				))}
 			</motion.div>
@@ -53,10 +63,11 @@ export function RaceMarkers({ playlistId, ...props }: Props) {
 }
 
 interface MarkerProps extends ComponentProps<'div'> {
-	label?: string;
+	distance?: string;
+	timestamp: string | null;
 }
 
-export function Marker({ label, ...props }: MarkerProps) {
+export function Marker({ distance, timestamp, ...props }: MarkerProps) {
 	return (
 		<TooltipProvider delayDuration={0}>
 			<Tooltip>
@@ -68,8 +79,9 @@ export function Marker({ label, ...props }: MarkerProps) {
 							props.className
 						)}></div>
 				</TooltipTrigger>
-				<TooltipContent>
-					<p>{label}</p>
+				<TooltipContent className='flex flex-col items-center'>
+					<p>{distance}</p>
+					{timestamp && <p className='font-extrabold'>{timestamp}</p>}
 				</TooltipContent>
 			</Tooltip>
 		</TooltipProvider>

@@ -22,7 +22,7 @@ type ImperialRaceName =
 	| 'Half-marathon'
 	| 'Marathon';
 
-type MetricRaceValue =
+export type MetricRaceValue =
 	| 400
 	| 800
 	| 1000
@@ -32,7 +32,7 @@ type MetricRaceValue =
 	| 20000
 	| 30000
 	| 50000;
-type ImperialRaceValue = 1 | 2 | 10 | 13.1 | 26.2;
+export type ImperialRaceValue = 1 | 2 | 10 | 13.1 | 26.2;
 
 export const metricRaces = new Map<MetricRaceName, MetricRaceValue>([
 	['400m', 400],
