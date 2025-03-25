@@ -2,6 +2,7 @@ import { UserTokens } from '@/lib/db/schema';
 import { createFetch } from '@better-fetch/fetch';
 import { Page, Playlist, Track, UserProfile } from '@spotify/web-api-ts-sdk';
 import * as encoding from '@oslojs/encoding';
+import { generateRandomString, RandomReader } from '@oslojs/crypto/random';
 
 export const $spotify = createFetch({
 	baseURL: 'https://api.spotify.com/v1',
@@ -83,6 +84,13 @@ export async function getPlaylists({
 	};
 }
 
+const random: RandomReader = {
+	read(bytes: Uint8Array): void {
+		crypto.getRandomValues(bytes);
+	},
+};
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 export async function getPlaylist({
 	token,
 	id,
@@ -100,7 +108,29 @@ export async function getPlaylist({
 		},
 	});
 
-	return { playlist };
+	return {
+		playlist: {
+			...playlist,
+			tracks: {
+				...playlist.tracks,
+				items: [
+					...playlist.tracks.items.map((t) => {
+						return {
+							...t,
+							track: {
+								...t.track,
+								id: `${t.track.id}:${generateRandomString(
+									random,
+									alphabet,
+									5
+								)}`,
+							},
+						};
+					}),
+				],
+			},
+		},
+	};
 }
 
 export async function reorderPlaylist({
