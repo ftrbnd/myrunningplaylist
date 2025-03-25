@@ -17,21 +17,23 @@ interface Props {
 
 export function PlaylistDetails({ id }: Props) {
 	const { playlist } = usePlaylist(id);
-	const { duration, tracksAreReordered } = useEditPlaylist(id);
+	const { duration, tracksAreReordered, pace } = useEditPlaylist(id);
 
 	return (
 		<>
 			<div className='flex flex-col md:flex-row gap-2 justify-between items-center w-full mb-2'>
-				<div className='flex gap-4 items-center w-full md:w-auto'>
-					<ImageThumbnail
-						images={playlist.images}
-						className='h-24 w-24 rounded-md'
-						alt={playlist.name}
-					/>
+				<div className='flex flex-col md:flex-row items-center gap-4'>
+					<div className='flex gap-4 items-center w-full md:w-auto overflow-hidden'>
+						<ImageThumbnail
+							images={playlist.images}
+							className='h-24 w-24 rounded-md'
+							alt={playlist.name}
+						/>
 
-					<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl line-clamp-2 overflow-visible'>
-						{playlist.name}
-					</h1>
+						<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl line-clamp-2 overflow-visible'>
+							{playlist.name}
+						</h1>
+					</div>
 				</div>
 
 				<p className='text-muted-foreground self-start md:self-center'>
@@ -51,12 +53,19 @@ export function PlaylistDetails({ id }: Props) {
 						<RaceForm playlistId={id} />
 					</CardContent>
 				</Card>
-				<div className='grid grid-flow-col md:gap-1'>
-					<PlaylistTracks playlistId={playlist.id} />
-					<RaceMarkers
-						playlistId={playlist.id}
-						className='place-self-end'
-					/>
+				<div className='flex flex-col items-center'>
+					{pace && (
+						<h2 className='text-2xl font-bold lg:text-3xl tracking-wider'>
+							Pace <span className='text-primary'>{pace}</span>
+						</h2>
+					)}
+					<div className='grid grid-flow-col md:gap-1'>
+						<PlaylistTracks playlistId={playlist.id} />
+						<RaceMarkers
+							playlistId={playlist.id}
+							className='place-self-end'
+						/>
+					</div>
 				</div>
 				<AnimatePresence initial={false}>
 					{tracksAreReordered && (

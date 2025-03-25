@@ -81,6 +81,7 @@ export function RaceForm({ playlistId, disabledWhileLoading }: RaceFormProps) {
 						<FormItem>
 							<FormLabel>Distance</FormLabel>
 							<Select
+								value={field.value}
 								onValueChange={field.onChange}
 								defaultValue={field.value}>
 								<FormControl>

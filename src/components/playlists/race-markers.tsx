@@ -18,11 +18,9 @@ interface Props extends ComponentProps<'div'> {
 
 export function RaceMarkers({ playlistId, ...props }: Props) {
 	const { store, goalTimeToRuntimeRatio } = useEditPlaylist(playlistId);
-	if (!store.race) return null;
+	if (!store.race || !store.goalTime) return null;
 
-	// TODO: add timestamp at each interval
-
-	const percentage = goalTimeToRuntimeRatio * 100;
+	const heightPercentage = goalTimeToRuntimeRatio * 100;
 	const intervals = allRaceIntervals.get(store.race.name);
 
 	return (
@@ -35,7 +33,7 @@ export function RaceMarkers({ playlistId, ...props }: Props) {
 					delay: 0.1,
 				}}
 				style={{
-					height: `${percentage}%`,
+					height: `${heightPercentage}%`,
 				}}
 				className={cn(
 					'w-2 rounded-sm self-start justify-self-center md:justify-self-auto',
