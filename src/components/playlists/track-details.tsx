@@ -7,27 +7,20 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { ComponentProps } from 'react';
-import { DragControls, motion } from 'motion/react';
 import { Grip } from 'lucide-react';
 import { formattedDuration, getDuration } from '@/lib/duration';
 import { ImageThumbnail } from '@/components/playlists/image-thumbnail';
 
 interface Props extends ComponentProps<'div'> {
 	track: Track;
-	dragControls: DragControls;
 }
 
-export const MotionTrackDetails = motion.create(TrackDetails, {
-	forwardMotionProps: true,
-});
-
-export function TrackDetails({ track, dragControls, ...props }: Props) {
+export function TrackDetails({ track, ...props }: Props) {
 	const { minutes, seconds } = getDuration(track.duration_ms);
 	const artists = track.artists.map((artist) => artist.name).join(', ');
 
 	return (
 		<div
-			ref={props.ref}
 			className={cn(
 				'bg-card flex items-center gap-2 rounded-md border p-4 md:max-w-xl hover:bg-secondary/80 shadow-md shadow-muted',
 				props.className
@@ -66,8 +59,7 @@ export function TrackDetails({ track, dragControls, ...props }: Props) {
 				</Tooltip>
 				<p className='font-medium'>{formattedDuration({ seconds, minutes })}</p>
 				<Grip
-					className='self-center min-h-5 max-h-5 min-w-5 max-w-5 hover:cursor-grab hover:opacity-80'
-					onPointerDown={(event) => dragControls.start(event)}
+					className='self-center min-h-5 max-h-5 min-w-5 max-w-5'
 					style={{ touchAction: 'none' }}
 				/>
 			</TooltipProvider>

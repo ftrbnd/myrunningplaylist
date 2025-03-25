@@ -5,7 +5,7 @@ import { Track } from '@spotify/web-api-ts-sdk';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { MotionTrackDetails } from '@/components/playlists/track-details';
+import { TrackDetails } from '@/components/playlists/track-details';
 import { usePlaylist } from '@/hooks/use-playlist';
 import {
 	ContextMenu,
@@ -14,12 +14,7 @@ import {
 	ContextMenuTrigger,
 	ContextMenuItem,
 } from '@/components/ui/context-menu';
-import {
-	AnimatePresence,
-	Reorder,
-	useDragControls,
-	useMotionValue,
-} from 'motion/react';
+import { AnimatePresence, Reorder, useMotionValue } from 'motion/react';
 import { useRaisedShadow } from '@/hooks/use-raised-shadow';
 import { ComponentProps } from 'react';
 import { formattedDuration, getDuration } from '@/lib/duration';
@@ -71,7 +66,6 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 
 	const y = useMotionValue(0);
 	const boxShadow = useRaisedShadow(y);
-	const controls = useDragControls();
 
 	const getStartingTimestamp = (trackIndex: number) => {
 		const tracksBefore = store.tracks.filter((_, i) => i < trackIndex);
@@ -102,9 +96,7 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
-			dragListener={false}
-			dragControls={controls}
-			className='flex flex-col gap-1 rounded-md p-2'>
+			className='flex flex-col gap-1 rounded-md p-2 hover:cursor-grab hover:opacity-80'>
 			<div className='flex gap-1'>
 				{index === 0 ? (
 					<Badge variant='green'>Start: 00:00</Badge>
@@ -130,10 +122,9 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 					</Button>
 				</div>
 				<ContextMenu>
-					<ContextMenuTrigger className='flex-1 hover:cursor-pointer'>
-						<MotionTrackDetails
+					<ContextMenuTrigger className='flex-1'>
+						<TrackDetails
 							track={value}
-							dragControls={controls}
 							className={cn(
 								'flex-1',
 								trackIsOutOfOrder(index, value) && 'border-primary'
