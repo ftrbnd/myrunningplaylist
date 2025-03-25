@@ -36,7 +36,15 @@ function EditingToast({ playlistId, ...props }: Props) {
 					onClick={resetTracks}>
 					Reset
 				</Button>
-				<Button onClick={() => submitReorder(store.tracks)}>Save</Button>
+				<Button
+					onClick={() =>
+						submitReorder({
+							newOrder: store.tracks,
+							resetEditedTracks: resetTracks,
+						})
+					}>
+					Save
+				</Button>
 			</div>
 		</div>
 	);

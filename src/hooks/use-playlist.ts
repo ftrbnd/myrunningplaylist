@@ -12,6 +12,11 @@ import {
 import { useSession } from '@/hooks/use-session';
 import { Track } from '@spotify/web-api-ts-sdk';
 
+interface MutationParams {
+	newOrder: Track[];
+	resetEditedTracks: () => Promise<void>;
+}
+
 export function usePlaylist(playlistId: string) {
 	const session = useSession();
 	const queryClient = useQueryClient();
@@ -29,8 +34,8 @@ export function usePlaylist(playlistId: string) {
 	});
 
 	const reorderMutation = useMutation({
-		mutationFn: async (newOrder: Track[]) => {
-			const promises = newOrder
+		mutationFn: async (params: MutationParams) => {
+			const promises = params.newOrder
 				.map((track, newIndex) => {
 					const original = playlist.tracks.items;
 					if (original.at(newIndex)?.track.uri === track.uri) return;
@@ -52,10 +57,12 @@ export function usePlaylist(playlistId: string) {
 			const snapshot_ids = await Promise.all(promises);
 			return snapshot_ids;
 		},
-		onSuccess: () => {
+		onSuccess: (_data, variables) => {
 			queryClient.invalidateQueries({
 				queryKey: [PLAYLISTS_QUERY_KEY, playlist.id],
 			});
+
+			variables.resetEditedTracks();
 		},
 	});
 
