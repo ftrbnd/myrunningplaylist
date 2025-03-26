@@ -3,6 +3,8 @@ import { createFetch } from '@better-fetch/fetch';
 import { Page, Playlist, Track, UserProfile } from '@spotify/web-api-ts-sdk';
 import * as encoding from '@oslojs/encoding';
 import { generateRandomString, RandomReader } from '@oslojs/crypto/random';
+import { getCurrentSession } from '@/actions/auth';
+import { webcrypto } from 'node:crypto';
 
 export const $spotify = createFetch({
 	baseURL: 'https://api.spotify.com/v1',
@@ -11,6 +13,16 @@ export const $spotify = createFetch({
 		attempts: 3,
 		delay: 1000,
 	},
+	plugins: [
+		{
+			id: 'get-current-session',
+			name: 'Get Current Session',
+			init: async (url, options) => {
+				await getCurrentSession();
+				return { url, options };
+			},
+		},
+	],
 	onError: (e) => {
 		if (e.error.status === 401) throw new Error('Spotify token expired');
 	},
@@ -79,14 +91,37 @@ export async function getPlaylists({
 		},
 	});
 
+	const userPlaylists = playlists.items.filter(
+		(p) => p.owner.id === spotifyUserId
+	);
+
+	// const sortedPlaylists = userPlaylists?.sort((a, b) => {
+	// 	const mostRecentlyAddedTrackFromA = a.tracks.items?.reduce((a, b) => {
+	// 		const addedAtA = new Date(a.added_at);
+	// 		const addedAtB = new Date(b.added_at);
+	// 		return addedAtA > addedAtB ? a : b;
+	// 	});
+
+	// 	const mostRecentlyAddedTrackFromB = b.tracks.items?.reduce((a, b) => {
+	// 		const addedAtA = new Date(a.added_at);
+	// 		const addedAtB = new Date(b.added_at);
+	// 		return addedAtA > addedAtB ? a : b;
+	// 	});
+
+	// 	return (
+	// 		new Date(mostRecentlyAddedTrackFromA?.added_at).getTime() -
+	// 		new Date(mostRecentlyAddedTrackFromB?.added_at).getTime()
+	// 	);
+	// });
+
 	return {
-		playlists: playlists?.items.filter((p) => p.owner.id === spotifyUserId),
+		playlists: userPlaylists,
 	};
 }
 
 const random: RandomReader = {
 	read(bytes: Uint8Array): void {
-		crypto.getRandomValues(bytes);
+		webcrypto.getRandomValues(bytes);
 	},
 };
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
