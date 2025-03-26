@@ -77,19 +77,29 @@ export async function getCurrentUser({ token }: { token?: string | null }) {
 export async function getPlaylists({
 	token,
 	spotifyUserId,
+	previousUrl,
+	nextUrl,
 }: {
 	token?: string | null;
 	spotifyUserId?: string;
+	previousUrl?: string | null;
+	nextUrl?: string | null;
 }) {
 	if (!token || !spotifyUserId)
 		throw new Error('Spotify access token and user id are both required');
 
-	const playlists = await $spotify<Page<Playlist>>('/me/playlists?limit=50', {
-		auth: {
-			type: 'Bearer',
-			token,
-		},
-	});
+	const prevUrlPath = previousUrl?.split('v1')[1];
+	const nextUrlPath = nextUrl?.split('v1')[1];
+
+	const playlists = await $spotify<Page<Playlist>>(
+		nextUrlPath ?? prevUrlPath ?? `/me/playlists?limit=50`,
+		{
+			auth: {
+				type: 'Bearer',
+				token,
+			},
+		}
+	);
 
 	const userPlaylists = playlists.items.filter(
 		(p) => p.owner.id === spotifyUserId
@@ -116,6 +126,8 @@ export async function getPlaylists({
 
 	return {
 		playlists: userPlaylists,
+		previousUrl: playlists.previous,
+		nextUrl: playlists.next,
 	};
 }
 

@@ -14,7 +14,7 @@ export default function PlaylistCard({ playlist }: Props) {
 			<div className='playlist-card'>
 				<ImageThumbnail
 					images={playlist.images}
-					className='h-24 w-24 md:h-full md:w-full rounded-md'
+					className='h-24 w-24 md:h-full md:w-full rounded-md aspect-square'
 					alt={playlist.name}
 				/>
 
