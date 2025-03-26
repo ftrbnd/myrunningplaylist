@@ -1,6 +1,12 @@
 import { UserTokens } from '@/lib/db/schema';
 import { createFetch } from '@better-fetch/fetch';
-import { Page, Playlist, Track, UserProfile } from '@spotify/web-api-ts-sdk';
+import {
+	Page,
+	PartialSearchResult,
+	Playlist,
+	Track,
+	UserProfile,
+} from '@spotify/web-api-ts-sdk';
 import * as encoding from '@oslojs/encoding';
 import { generateRandomString, RandomReader } from '@oslojs/crypto/random';
 import { getCurrentSession } from '@/actions/auth';
@@ -79,50 +85,47 @@ export async function getPlaylists({
 	spotifyUserId,
 	previousUrl,
 	nextUrl,
+	searchQuery,
 }: {
 	token?: string | null;
 	spotifyUserId?: string;
 	previousUrl?: string | null;
 	nextUrl?: string | null;
+	searchQuery?: string | null;
 }) {
 	if (!token || !spotifyUserId)
 		throw new Error('Spotify access token and user id are both required');
 
 	const prevUrlPath = previousUrl?.split('v1')[1];
 	const nextUrlPath = nextUrl?.split('v1')[1];
+	const searchPath = searchQuery
+		? `/search?q=${searchQuery}&type=playlist&limit=50`
+		: null;
 
-	const playlists = await $spotify<Page<Playlist>>(
-		nextUrlPath ?? prevUrlPath ?? `/me/playlists?limit=50`,
-		{
+	let playlists: Page<Playlist>;
+	if (searchPath) {
+		const res = await $spotify<PartialSearchResult>(searchPath, {
 			auth: {
 				type: 'Bearer',
 				token,
 			},
-		}
-	);
+		});
+		playlists = res.playlists as Page<Playlist>;
+	} else {
+		playlists = await $spotify<Page<Playlist>>(
+			nextUrlPath ?? prevUrlPath ?? `/me/playlists?limit=50`,
+			{
+				auth: {
+					type: 'Bearer',
+					token,
+				},
+			}
+		);
+	}
 
 	const userPlaylists = playlists.items.filter(
-		(p) => p.owner.id === spotifyUserId
+		(p) => p?.owner.id === spotifyUserId
 	);
-
-	// const sortedPlaylists = userPlaylists?.sort((a, b) => {
-	// 	const mostRecentlyAddedTrackFromA = a.tracks.items?.reduce((a, b) => {
-	// 		const addedAtA = new Date(a.added_at);
-	// 		const addedAtB = new Date(b.added_at);
-	// 		return addedAtA > addedAtB ? a : b;
-	// 	});
-
-	// 	const mostRecentlyAddedTrackFromB = b.tracks.items?.reduce((a, b) => {
-	// 		const addedAtA = new Date(a.added_at);
-	// 		const addedAtB = new Date(b.added_at);
-	// 		return addedAtA > addedAtB ? a : b;
-	// 	});
-
-	// 	return (
-	// 		new Date(mostRecentlyAddedTrackFromA?.added_at).getTime() -
-	// 		new Date(mostRecentlyAddedTrackFromB?.added_at).getTime()
-	// 	);
-	// });
 
 	return {
 		playlists: userPlaylists,

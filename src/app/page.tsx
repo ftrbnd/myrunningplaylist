@@ -23,7 +23,7 @@ export default async function Home() {
 	});
 
 	return (
-		<div className='flex flex-col justify-center items-center self-center max-w-screen-xl'>
+		<div className='flex-1 flex flex-col items-center self-center max-w-screen-xl w-full'>
 			<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4 self-start'>
 				My playlists
 			</h1>

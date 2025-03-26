@@ -15,31 +15,46 @@ import {
 	PaginationItem,
 } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function PlaylistCollection() {
-	const { playlists, getPreviousUrl, getNextUrl, getFirstUrl } = usePlaylists();
-
-	if (!playlists || playlists.length === 0)
-		return (
-			<Alert className='md:max-w-xl'>
-				<AlertCircle className='h-4 w-4' />
-				<AlertTitle>No playlists were found.</AlertTitle>
-				<AlertDescription>Try again later.</AlertDescription>
-			</Alert>
-		);
+	const {
+		playlists,
+		getPreviousUrl,
+		getNextUrl,
+		getFirstUrl,
+		searchQuery,
+		setSearchQuery,
+	} = usePlaylists();
 
 	return (
-		<div className='flex flex-col gap-4'>
-			<ul className='card-grid'>
-				{playlists.map((playlist, i) => (
-					<li
-						key={`${playlist.id}-${i}`}
-						className='h-full'>
-						<PlaylistCard playlist={playlist} />
-					</li>
-				))}
-			</ul>
-			<Pagination>
+		<div className='flex flex-col gap-4 justify-between flex-1 w-full'>
+			<div className='flex flex-col gap-4'>
+				<Input
+					type='search'
+					placeholder='Search...'
+					value={searchQuery}
+					onChange={(e) => setSearchQuery(e.target.value)}
+				/>
+				{!playlists || playlists.length === 0 ? (
+					<Alert className='md:max-w-xl self-center'>
+						<AlertCircle className='h-4 w-4' />
+						<AlertTitle>No playlists were found.</AlertTitle>
+						<AlertDescription>Try again later.</AlertDescription>
+					</Alert>
+				) : (
+					<ul className='card-grid'>
+						{playlists.map((playlist, i) => (
+							<li
+								key={`${playlist.id}-${i}`}
+								className='h-full'>
+								<PlaylistCard playlist={playlist} />
+							</li>
+						))}
+					</ul>
+				)}
+			</div>
+			<Pagination className='mt-4'>
 				<PaginationContent>
 					<PaginationItem className='text-primary'>
 						<Button
