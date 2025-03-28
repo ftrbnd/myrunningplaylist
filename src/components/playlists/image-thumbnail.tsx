@@ -12,7 +12,11 @@ export function ImageThumbnail({ images, ...props }: Props) {
 		? images.reverse().find((image) => image !== undefined)
 		: null;
 
-	return image ? (
+	if (!image) {
+		return <Icons.localFile className={props.className} />;
+	}
+
+	return (
 		<Image
 			{...props}
 			className={props.className}
@@ -21,8 +25,7 @@ export function ImageThumbnail({ images, ...props }: Props) {
 			height={image.height ?? 300}
 			width={image.width ?? 300}
 			alt={props.alt ?? 'Thumbnail'}
+			suppressHydrationWarning
 		/>
-	) : (
-		<Icons.localFile className={props.className} />
 	);
 }
