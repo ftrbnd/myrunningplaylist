@@ -34,18 +34,16 @@ export function PlaylistDetails({ id }: Props) {
 	return (
 		<>
 			<div className='flex flex-col md:flex-row gap-2 justify-between items-center w-full mb-2'>
-				<div className='flex flex-col md:flex-row items-center gap-4'>
-					<div className='flex gap-4 items-center w-full md:w-auto overflow-hidden'>
-						<ImageThumbnail
-							images={playlist.images}
-							className='h-24 w-24 rounded-md'
-							alt={playlist.name}
-						/>
+				<div className='flex gap-4 items-center  w-full md:w-auto overflow-hidden'>
+					<ImageThumbnail
+						images={playlist.images}
+						className='h-24 w-24 rounded-md'
+						alt={playlist.name}
+					/>
 
-						<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl line-clamp-2 overflow-visible'>
-							{playlist.name}
-						</h1>
-					</div>
+					<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl line-clamp-2 overflow-visible'>
+						{playlist.name}
+					</h1>
 				</div>
 
 				<p className='text-muted-foreground self-start md:self-center'>

@@ -9,7 +9,7 @@ import {
 } from '@spotify/web-api-ts-sdk';
 import * as encoding from '@oslojs/encoding';
 import { generateRandomString, RandomReader } from '@oslojs/crypto/random';
-import { webcrypto } from 'node:crypto';
+import { getRandomValues } from 'crypto';
 
 export const $spotify = createFetch({
 	baseURL: 'https://api.spotify.com/v1',
@@ -125,7 +125,7 @@ export async function getPlaylists({
 
 const random: RandomReader = {
 	read(bytes: Uint8Array): void {
-		webcrypto.getRandomValues(bytes);
+		getRandomValues(bytes);
 	},
 };
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
