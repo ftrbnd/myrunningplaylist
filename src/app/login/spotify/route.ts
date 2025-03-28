@@ -11,7 +11,8 @@ export async function GET(): Promise<Response> {
 	];
 	const url = spotify.createAuthorizationURL(state, null, scopes);
 
-	(await cookies()).set('spotify_oauth_state', state, {
+	const cookieStore = await cookies();
+	cookieStore.set('spotify_oauth_state', state, {
 		path: '/',
 		secure: process.env.NODE_ENV === 'production',
 		httpOnly: true,

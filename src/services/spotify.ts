@@ -9,7 +9,6 @@ import {
 } from '@spotify/web-api-ts-sdk';
 import * as encoding from '@oslojs/encoding';
 import { generateRandomString, RandomReader } from '@oslojs/crypto/random';
-import { getCurrentSession } from '@/actions/auth';
 import { webcrypto } from 'node:crypto';
 
 export const $spotify = createFetch({
@@ -19,16 +18,6 @@ export const $spotify = createFetch({
 		attempts: 3,
 		delay: 1000,
 	},
-	plugins: [
-		{
-			id: 'get-current-session',
-			name: 'Get Current Session',
-			init: async (url, options) => {
-				await getCurrentSession();
-				return { url, options };
-			},
-		},
-	],
 	onError: (e) => {
 		if (e.error.status === 401) throw new Error('Spotify token expired');
 	},
