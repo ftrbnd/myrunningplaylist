@@ -10,6 +10,7 @@ import {
 import * as encoding from '@oslojs/encoding';
 import { generateRandomString, RandomReader } from '@oslojs/crypto/random';
 import { getRandomValues } from 'crypto';
+import { redirect } from 'next/navigation';
 
 export const $spotify = createFetch({
 	baseURL: 'https://api.spotify.com/v1',
@@ -19,7 +20,9 @@ export const $spotify = createFetch({
 		delay: 1000,
 	},
 	onError: (e) => {
-		if (e.error.status === 401) throw new Error('Spotify token expired');
+		if (e.error.status === 401) {
+			redirect('/login');
+		}
 	},
 	throw: true,
 });
