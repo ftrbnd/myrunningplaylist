@@ -63,7 +63,7 @@ export function PlaylistDetails({ id }: Props) {
 						<RaceForm playlistId={id} />
 					</CardContent>
 				</Card>
-				<div className='flex flex-col items-center'>
+				<div className='flex flex-col'>
 					{pace && (
 						<h2 className='text-2xl font-bold lg:text-3xl tracking-wider'>
 							Pace <span className='text-primary'>{pace}</span>
@@ -71,7 +71,7 @@ export function PlaylistDetails({ id }: Props) {
 					)}
 					<div
 						ref={ref}
-						className='grid grid-flow-col md:gap-1 overflow-y-clip'>
+						className='grid grid-flow-col md:gap-2 overflow-y-clip'>
 						<PlaylistTracks
 							playlistId={playlist.id}
 							showOverflowWarning={isOverflowing}
@@ -82,20 +82,20 @@ export function PlaylistDetails({ id }: Props) {
 						/>
 					</div>
 				</div>
-				<AnimatePresence initial={false}>
-					{tracksAreReordered && (
-						<MotionEditingToast
-							initial={{ opacity: 0, scale: 0 }}
-							animate={{ opacity: 1, scale: 1 }}
-							exit={{ opacity: 0, scale: 0 }}
-							transition={{
-								delay: 0.1,
-							}}
-							playlistId={id}
-						/>
-					)}
-				</AnimatePresence>
 			</div>
+			<AnimatePresence initial={false}>
+				{tracksAreReordered && (
+					<MotionEditingToast
+						initial={{ opacity: 0, scale: 0 }}
+						animate={{ opacity: 1, scale: 1 }}
+						exit={{ opacity: 0, scale: 0 }}
+						transition={{
+							delay: 0.1,
+						}}
+						playlistId={id}
+					/>
+				)}
+			</AnimatePresence>
 		</>
 	);
 }
