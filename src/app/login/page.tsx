@@ -7,7 +7,7 @@ export default async function Page() {
 	if (session) return redirect('/');
 
 	return (
-		<div className='flex-col-full items-center justify-center'>
+		<div className='flex-col-full items-center justify-center px-4'>
 			<LoginForm />
 		</div>
 	);
