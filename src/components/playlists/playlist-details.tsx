@@ -6,7 +6,7 @@ import { PlaylistTracks } from '@/components/playlists/playlist-tracks';
 import { RaceForm } from '@/components/playlists/race-form';
 import { usePlaylist } from '@/hooks/use-playlist';
 import { MotionEditingToast } from '@/components/playlists/editing-toast';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { RaceMarkers } from '@/components/playlists/race-markers';
 import { ImageThumbnail } from '@/components/playlists/image-thumbnail';
 import { useEditPlaylist } from '@/hooks/use-edit-playlist';
@@ -33,8 +33,14 @@ export function PlaylistDetails({ id }: Props) {
 
 	return (
 		<>
-			<div className='flex flex-col md:flex-row gap-2 justify-between items-center w-full mb-2'>
-				<div className='flex gap-4 items-center  w-full md:w-auto overflow-hidden'>
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				className='flex flex-col md:flex-row gap-2 justify-between items-center w-full mb-2'>
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					className='flex gap-4 items-center  w-full md:w-auto overflow-hidden'>
 					<ImageThumbnail
 						images={playlist.images}
 						className='h-24 w-24 rounded-md'
@@ -44,13 +50,16 @@ export function PlaylistDetails({ id }: Props) {
 					<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl line-clamp-2 overflow-visible'>
 						{playlist.name}
 					</h1>
-				</div>
+				</motion.div>
 
 				<p className='text-muted-foreground self-start md:self-center'>
 					Total runtime: {durationDescription(duration)}
 				</p>
-			</div>
-			<div className='flex flex-col gap-2 md:grid md:grid-cols-2'>
+			</motion.div>
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				className='flex flex-col gap-2 md:grid md:grid-cols-2'>
 				<Card
 					className='h-min w-full md:w-min md:col-start-2 
 				md:row-start-1 md:justify-self-end'>
@@ -63,13 +72,18 @@ export function PlaylistDetails({ id }: Props) {
 						<RaceForm playlistId={id} />
 					</CardContent>
 				</Card>
-				<div className='flex flex-col'>
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					className='flex flex-col'>
 					{pace && (
 						<h2 className='text-2xl font-bold lg:text-3xl tracking-wider'>
 							Pace <span className='text-primary'>{pace}</span>
 						</h2>
 					)}
-					<div
+					<motion.div
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
 						ref={ref}
 						className='grid grid-flow-col md:gap-2 overflow-y-clip'>
 						<PlaylistTracks
@@ -80,9 +94,9 @@ export function PlaylistDetails({ id }: Props) {
 							playlistId={playlist.id}
 							className='place-self-end'
 						/>
-					</div>
-				</div>
-			</div>
+					</motion.div>
+				</motion.div>
+			</motion.div>
 			<AnimatePresence initial={false}>
 				{tracksAreReordered && (
 					<MotionEditingToast

@@ -111,6 +111,9 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
+			whileHover={{ scale: 0.95 }}
+			onHoverEnd={() => {}}
+			whileDrag={{ scale: 1.05 }}
 			className='flex flex-col gap-1 rounded-md p-2 hover:cursor-grab hover:opacity-80'>
 			<div className='flex gap-1'>
 				{index === 0 ? (

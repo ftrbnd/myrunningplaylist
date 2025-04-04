@@ -22,7 +22,7 @@ export function TrackDetails({ track, ...props }: Props) {
 	return (
 		<div
 			className={cn(
-				'bg-card flex items-center gap-2 rounded-md border p-4 md:max-w-xl hover:bg-secondary/80 shadow-md shadow-muted',
+				'bg-card flex items-center gap-2 rounded-md border p-4 md:max-w-xl shadow-md shadow-muted',
 				props.className
 			)}>
 			<ImageThumbnail

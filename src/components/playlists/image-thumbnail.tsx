@@ -1,7 +1,7 @@
 import { Image as SpotifyImage } from '@spotify/web-api-ts-sdk';
-import Image from 'next/image';
 import { Icons } from '@/components/layout/icons';
 import { ComponentProps } from 'react';
+import { motion } from 'motion/react';
 
 interface Props extends ComponentProps<'img'> {
 	images: SpotifyImage[];
@@ -17,10 +17,9 @@ export function ImageThumbnail({ images, ...props }: Props) {
 	}
 
 	return (
-		<Image
-			{...props}
+		<motion.img
+			layoutId={image.url}
 			className={props.className}
-			priority
 			src={image.url}
 			height={image.height ?? 300}
 			width={image.width ?? 300}
