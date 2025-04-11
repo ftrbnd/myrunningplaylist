@@ -59,13 +59,12 @@ function getPace(race?: Race | null, goalTime?: Duration | null) {
 }
 
 export function useEditPlaylist(playlistId: string) {
-	const { playlist, refetch } = usePlaylist(playlistId);
+	const { playlist } = usePlaylist(playlistId);
 	const store = usePlaylistStore(playlist, (state) => state);
 
-	const resetTracks = async () => {
-		const { data } = await refetch();
-		if (data?.playlist)
-			store.setTracks(data?.playlist.tracks.items.map(({ track }) => track));
+	const resetTracks = () => {
+		// TOOD: playlist from this usePlaylist call doesn't sync after mutation
+		store.setTracks(playlist.tracks.items.map(({ track }) => track));
 	};
 
 	const tracksAreReordered = store.tracks.some(

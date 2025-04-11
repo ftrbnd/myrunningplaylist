@@ -14,7 +14,7 @@ import { Track } from '@spotify/web-api-ts-sdk';
 
 interface MutationParams {
 	newOrder: Track[];
-	resetEditedTracks: () => Promise<void>;
+	resetEditedTracks: () => void;
 }
 
 export function usePlaylist(playlistId: string) {
@@ -57,25 +57,25 @@ export function usePlaylist(playlistId: string) {
 			const snapshot_ids = await Promise.all(promises);
 			return snapshot_ids;
 		},
-		onSuccess: (_data, variables) => {
-			queryClient.invalidateQueries({
-				queryKey: [PLAYLISTS_QUERY_KEY, playlist.id],
+		onSuccess: async (_data, vars) => {
+			await queryClient.invalidateQueries({
+				queryKey: [PLAYLISTS_QUERY_KEY, playlistId],
 			});
 
-			variables.resetEditedTracks();
+			vars.resetEditedTracks();
 		},
 	});
 
 	const removeTrackMutation = useMutation({
-		mutationFn: ({ trackUris }: { trackUris: string[] }) =>
-			removeTracksFromPlaylist({
+		mutationFn: async ({ trackUris }: { trackUris: string[] }) =>
+			await removeTracksFromPlaylist({
 				token: session.user?.accessToken,
 				playlistId: playlist.id,
 				trackUris,
 			}),
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: [PLAYLISTS_QUERY_KEY, playlist.id],
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({
+				queryKey: [PLAYLISTS_QUERY_KEY, playlistId],
 			});
 		},
 	});
@@ -83,7 +83,10 @@ export function usePlaylist(playlistId: string) {
 	return {
 		playlist,
 		refetch,
-		submitReorder: reorderMutation.mutate,
-		removeTracks: removeTrackMutation.mutate,
+		submitReorder: reorderMutation.mutateAsync,
+		reorderIsPending: reorderMutation.isPending,
+		reorderIsSuccess: reorderMutation.isSuccess,
+		removeTracks: removeTrackMutation.mutateAsync,
+		removalIsPending: removeTrackMutation.isPending,
 	};
 }

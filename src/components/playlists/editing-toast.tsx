@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { useEditPlaylist } from '@/hooks/use-edit-playlist';
 import { usePlaylist } from '@/hooks/use-playlist';
 import { cn } from '@/lib/cn';
+import { Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ComponentProps } from 'react';
 
@@ -12,7 +13,7 @@ interface Props extends ComponentProps<'div'> {
 export const MotionEditingToast = motion.create(EditingToast);
 
 function EditingToast({ playlistId, ...props }: Props) {
-	const { submitReorder } = usePlaylist(playlistId);
+	const { submitReorder, reorderIsPending } = usePlaylist(playlistId);
 	const { store, resetTracks } = useEditPlaylist(playlistId);
 
 	return (
@@ -32,18 +33,21 @@ function EditingToast({ playlistId, ...props }: Props) {
 			</div>
 			<div className='flex gap-2 items-center'>
 				<Button
+					disabled={reorderIsPending}
 					variant='destructive'
 					onClick={resetTracks}>
 					Reset
 				</Button>
 				<Button
-					onClick={() =>
-						submitReorder({
+					disabled={reorderIsPending}
+					onClick={async () =>
+						await submitReorder({
 							newOrder: store.tracks,
 							resetEditedTracks: resetTracks,
 						})
 					}>
-					Save
+					{reorderIsPending && <Loader2 className='animate-spin' />}
+					{reorderIsPending ? 'Saving...' : 'Save'}
 				</Button>
 			</div>
 		</div>

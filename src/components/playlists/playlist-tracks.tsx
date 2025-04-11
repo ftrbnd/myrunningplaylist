@@ -100,8 +100,8 @@ function ReorderableTrackItem({ value, index, playlistId }: TrackItemProps) {
 		return original.uri !== track.uri;
 	};
 
-	const handleClick = (track: Track) => {
-		removeTracks({ trackUris: [track.uri] });
+	const handleClick = async (track: Track) => {
+		await removeTracks({ trackUris: [track.uri] });
 	};
 
 	return (
