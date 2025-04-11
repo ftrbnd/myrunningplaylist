@@ -12,11 +12,12 @@ export function LoginForm({ className, ...props }: ComponentProps<'div'>) {
 			{...props}>
 			<CardContent className='grid p-0 md:grid-cols-2 items-center max-h-[750px] max-w-[1000px]'>
 				<Image
+					priority
 					height={1000}
 					width={1000}
 					src='/myrunningplaylist.jpg'
 					alt='My Running Playlist'
-					className='object-cover'
+					className='object-cover max-h-[500px]'
 				/>
 
 				<div className='p-6 md:p-8'>

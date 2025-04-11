@@ -18,9 +18,9 @@ export default function PlaylistCard({ playlist }: Props) {
 					initial={{ opacity: 0, scale: 0 }}
 					animate={{ opacity: 1, scale: 1 }}
 					exit={{ opacity: 0, scale: 0 }}
-					whileHover={{ scale: 0.9 }}
+					whileHover={{ scale: 0.95 }}
 					whileFocus={{ opacity: 0.5 }}
-					whileTap={{ scale: 1.1 }}>
+					whileTap={{ scale: 1.05 }}>
 					<ImageThumbnail
 						images={playlist.images}
 						className='h-24 w-24 md:h-full md:w-full rounded-md aspect-square'
